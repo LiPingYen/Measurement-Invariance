@@ -7,12 +7,12 @@ library(simsem)
 
 
 ####generate population####
+##variable=6
 #first group
 lambda1<-matrix(c(0.7,0.9,0.5,0.6,0.8,0.3),nrow= 6)
 phi1<-1
 theta1<-diag(c(0.8,1.3,0.4,0.5,0.9,0.2))
 pop_co_ma1<-lambda1%*%phi1%*%t(lambda1)+theta1
-
 
 #second group
 ##con:low, LD: small
@@ -189,7 +189,10 @@ dta8<-rbind(dta1_8,dta2_8)%>%
   mutate(group=c(rep(1,100),rep(2,100)))
 
 ####Confirmatory analysis####
-md<-"fac1=~v1+v2+v3+v4+v5+v6"
+md<-"
+fac1=~NA*v1+v2+v3+v4+v5+v6
+fac1~~c(1,NA)*fac1
+"
 
 ##con:low, LD: small
 lav_fit_base1<-cfa(model=md,data=dta1,group="group",std.lv = TRUE,group.equal=c("loadings"))
