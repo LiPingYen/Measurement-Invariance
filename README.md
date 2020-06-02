@@ -8,4 +8,4 @@ In this folder, you can find the simulation process conducted by R. Due to to th
 
 
 ## Reference
-1. Myeongsun Yoon & Roger E. Millsap (2007) Detecting Violations of Factorial Invariance Using Data-Based Specification Searches: A Monte Carlo Study, Structural Equation Modeling: A Multidisciplinary Journal, 14:3, 435-463, DOI:
+1. Myeongsun Yoon & Roger E. Millsap (2007) Detecting Violations of Factorial Invariance Using Data-Based Specification Searches: A Monte Carlo Study, Structural Equation Modeling: A Multidisciplinary Journal, 14:3, 435-463, DOI: [10.1080/10705510701301677](https://www.tandfonline.com/doi/full/10.1080/10705510701301677)
