@@ -8,6 +8,7 @@ library(stringr)
 library(reshape2)
 library(compare)
 library(parallel)
+library(future)
 
 
 ####產生population資料####
@@ -42,7 +43,7 @@ rmfun_pl<-function(md,dta){
 }
 
 #產生所有資料的rmsea，使用平行分析
-cpu.cores <- detectCores()
+cpu.cores <- availableCores()
 cl <- makeCluster(cpu.cores,type = "FORK")
 rmfun_papl_test<-function(md,dta){
   parSapply(cl=cl,dta,function(x){

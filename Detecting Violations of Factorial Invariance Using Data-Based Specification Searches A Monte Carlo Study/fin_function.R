@@ -8,6 +8,7 @@ library(stringr)
 library(reshape2)
 library(compare)
 library(parallel)
+library(future)
 
 ####產生population資料####
 gen_dta_v6<-function(nobs,la1,phi1,la2,phi2,th2){
@@ -32,7 +33,7 @@ gen_dta_v12<-function(nobs,la1,phi1,la2,phi2,th2){
 }
 
 ####產生所有資料的rmsea####
-#cpu.cores <- detectCores()
+#cpu.cores <- availableCores()
 #cl <- makeCluster(cpu.cores,type = "FORK")
 rmfun_papl<-function(md,dta){
   parSapply(cl=cl,dta,function(x){
