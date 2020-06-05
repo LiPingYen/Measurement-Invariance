@@ -81,7 +81,7 @@ true_det_pl<-function(non_var,non_con){
   })
   names(b)<-NULL
   c<-melt(b)
-  c$L1 <- factor(c$L1, seq_along(tab))
+  c$L1 <- factor(c$L1, seq_along(b))
   d<-dcast(c, L1 ~ x, fill = 0, drop = FALSE)
   colnames(d)<-c("L1","F","T")
   count(d,F,T)%>%
@@ -98,7 +98,7 @@ fal_det_pl<-function(non_var,inv_con){
   })
   names(b)<-NULL
   c<-melt(b)
-  c$L1 <- factor(c$L1, seq_along(tab))
+  c$L1 <- factor(c$L1, seq_along(b))
   d<-dcast(c, L1 ~ x, fill = 0, drop = FALSE)
   colnames(d)<-c("L1","F","T")
   count(d,F,T)%>%
