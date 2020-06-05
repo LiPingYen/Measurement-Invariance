@@ -11,13 +11,10 @@ lambda2_8<-matrix(c(0.25,0.65,0.5,0.45,0.45,0.3),nrow = 6)
 phi2<-1.3
 theta2_8<-diag(c(0.5,1.2,0.4,0.4,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta8_", i), data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_8,
+dta_list<-replicate(n=reps,data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_8,
                                                 phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_8)))
-}
+                                                th2 = theta2_8)),simplify = FALSE)
 
-dta_list = mget(apropos("dta8_"))
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6
 fac1~~c(1,NA)*fac1
@@ -53,13 +50,10 @@ lambda2_8<-matrix(c(0.25,0.65,0.5,0.45,0.45,0.3),nrow = 6)
 phi2<-1.3
 theta2_8<-diag(c(0.5,1.2,0.4,0.4,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta8_", i), data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_8,
+dta_list<-replicate(n=reps,data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_8,
                                                 phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_8)))
-}
+                                                th2 = theta2_8)),simplify = FALSE)
 
-dta_list = mget(apropos("dta8_"))
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6
 fac1~~c(1,NA)*fac1

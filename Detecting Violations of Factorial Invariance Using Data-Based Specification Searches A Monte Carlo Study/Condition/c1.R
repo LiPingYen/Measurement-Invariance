@@ -11,13 +11,11 @@ lambda2_1<-matrix(c(0.6,0.77,0.5,0.6,0.8,0.3),nrow = 6)
 phi2<-1.3
 theta2_1<-diag(c(0.8,1.3,0.4,0.5,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta1_", i), data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
-                                                phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_1)))
-}
 
-dta_list = mget(apropos("dta1_"))
+dta_list<-replicate(n=reps,data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
+                                       phi1 = phi1,phi2 = phi2,
+                                       th2 = theta2_1)),simplify = FALSE)
+
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6
 fac1~~c(1,NA)*fac1
@@ -32,7 +30,7 @@ data.frame(mean=mean(rmsea_all_c1_n200),sd=sd(rmsea_all_c1_n200))
 stopCluster(cl)
 
 ####perfect recovery rate####
-non_var<-non_var_papl(md=md,dta=dta_list)
+non_var<-non_var_papl(md=md,dta=dta_list_test)
 non_all<-det_non_pl(non_var = non_var,non_con = c(".p1.",".p2."))
 mean(non_all)
 
@@ -53,13 +51,10 @@ lambda2_1<-matrix(c(0.6,0.77,0.5,0.6,0.8,0.3),nrow = 6)
 phi2<-1.3
 theta2_1<-diag(c(0.8,1.3,0.4,0.5,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta1_", i), data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
+dta_list<-replicate(n=reps,data.frame(gen_dta_v6(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
                                                 phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_1)))
-}
+                                                th2 = theta2_1)),simplify = FALSE)
 
-dta_list = mget(apropos("dta1_"))
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6
 fac1~~c(1,NA)*fac1
@@ -95,13 +90,10 @@ lambda2_1<-matrix(c(0.6,0.77,0.5,0.6,0.8,0.3,0.6,0.77,0.5,0.6,0.8,0.3),nrow = 12
 phi2<-1.3
 theta2_1<-diag(c(0.8,1.3,0.4,0.5,0.9,0.2,0.8,1.3,0.4,0.5,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta1_", i), data.frame(gen_dta_v12(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
+dta_list<-replicate(n=reps,data.frame(gen_dta_v12(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
                                                 phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_1)))
-}
+                                                th2 = theta2_1)),simplify = FALSE)
 
-dta_list = mget(apropos("dta1_"))
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6+v7+v8+v9+v10+v11+v12
 fac1~~c(1,NA)*fac1
@@ -138,13 +130,10 @@ lambda2_1<-matrix(c(0.6,0.77,0.5,0.6,0.8,0.3,0.6,0.77,0.5,0.6,0.8,0.3),nrow = 12
 phi2<-1.3
 theta2_1<-diag(c(0.8,1.3,0.4,0.5,0.9,0.2,0.8,1.3,0.4,0.5,0.9,0.2))
 
-for(i in 1:reps){
-  assign(paste0("dta1_", i), data.frame(gen_dta_v12(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
+dta_list<-replicate(n=reps,data.frame(gen_dta_v12(nobs = nobs,la1=lambda1_1,la2 = lambda2_1,
                                                 phi1 = phi1,phi2 = phi2,
-                                                th2 = theta2_1)))
-}
+                                                th2 = theta2_1)),simplify = FALSE)
 
-dta_list = mget(apropos("dta1_"))
 md<-"
 fac1=~NA*v1+v2+v3+v4+v5+v6+v7+v8+v9+v10+v11+v12
 fac1~~c(1,NA)*fac1
@@ -168,4 +157,3 @@ true_det_pl(non_var = non_var,non_con = c(".p1.",".p2.",".p7.",".p8."))
 
 ####false detection####
 fal_det_pl(non_var = non_var,inv_con = c(".p3.",".p4.",".p5.",".p6.",".p9.",".p10.",".p11.",".p12."))
-
