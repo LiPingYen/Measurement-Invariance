@@ -36,7 +36,7 @@ reps=1000
 nobs=250
 con.int=.95
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2),simplify = FALSE)
+det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2,testmd = mdconf,con.int = con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
@@ -76,7 +76,7 @@ reps=1000
 nobs=500
 con.int=.95
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2),simplify = FALSE)
+det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2,testmd = mdconf,con.int = con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
@@ -117,7 +117,7 @@ reps=1000
 nobs=1000
 con.int=.95
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2),simplify = FALSE)
+det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2,testmd = mdconf,con.int = con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
