@@ -50,7 +50,14 @@ check_non<-function(data,con.int){
 
 ####perfect recovery rate:completely detects non-invariant variable####
 #combine generating data and checking non-invariant variable together
-
+detnon_list<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fac_mean2,testmd,con.int){
+  dta_list<-replicate(n=reps,gen_dta(nobs=nobs,la1 = lambda1,phi1 = phi1,th1 = theta1,tau1 = tau1,fac_mean1 = fac_mean1,
+                                     la2 = lambda2,phi2 = phi2,th2 = theta2,tau2 = tau2,fac_mean2 = fac_mean2),simplify =FALSE )
+  lam_dta_list<-gen_lam(data=dta_list,model = testmd)
+  lam_dta<-rbindlist(lam_dta_list)
+  ch_non<-check_non(data = lam_dta,con.int = con.int)
+  ch_non
+}
 #non_con: non-invariant variable enter TRUE, NA enter NA, invariant enter FALSE 
 det_non<-function(det_list,non_con){
   sapply(det_list,function(x){
