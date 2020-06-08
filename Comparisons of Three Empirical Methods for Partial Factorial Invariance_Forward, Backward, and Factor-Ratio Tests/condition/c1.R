@@ -37,7 +37,8 @@ reps=1000
 nobs=250
 con.int=.95
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps = reps,nobs = nobs,md1 =ge_md1,md2=ge_md2,testmd = mdconf,con.int = con.int),simplify = FALSE)
+det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
