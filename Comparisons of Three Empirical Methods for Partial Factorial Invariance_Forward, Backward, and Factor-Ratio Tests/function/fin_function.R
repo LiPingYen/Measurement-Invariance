@@ -15,7 +15,6 @@ gen_dta<-function(nobs,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_mean2){
   dta1<-data.frame(rmvnorm(nobs,mean = pop_mean1,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
   dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
   dta<-rbind(dta1,dta2)%>%
-    rename(x1=X1,x2=X2,x3=X3,x4=X4,x5=X5,x6=X6)%>%
     mutate(group=c(rep(1,nobs),rep(2,nobs)))
   dta
 }
