@@ -41,6 +41,10 @@ mean(non_all)
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 mean(tyi_err)
 
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)
+
 
 ####CI=.99####
 con.int=.99
@@ -51,6 +55,10 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
 mean(non_all)
+
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)
 
 
 ####n=500####
@@ -77,6 +85,10 @@ mean(non_all)
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 mean(tyi_err)
 
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)
+
 
 ####CI=.99####
 con.int=.99
@@ -91,6 +103,10 @@ mean(non_all)
 #type I error
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 mean(tyi_err)
+
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)
 
 
 ####n=1000####
@@ -117,6 +133,9 @@ mean(non_all)
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 mean(tyi_err)
 
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)
 
 ####CI=.99####
 con.int=.99
@@ -131,3 +150,7 @@ mean(non_all)
 #type I error
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 mean(tyi_err)
+
+#type II error
+tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
+mean(tyii_err)

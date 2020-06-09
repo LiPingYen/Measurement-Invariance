@@ -72,3 +72,10 @@ det_tyi<-function(det_list,non_con){
     ifelse(x[3]==TRUE,1,ifelse(x[5]==TRUE,1,ifelse(x[6]==TRUE,1,0)))
   })
 }
+
+####Type II error####
+det_tyii<-function(det_list,non_con){
+  sapply(det_list,function(x){
+    ifelse(x[2]==FALSE,1,ifelse(x[4]==FALSE,1,0))
+  })
+}
