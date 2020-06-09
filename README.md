@@ -13,4 +13,5 @@ R code for conducting simulation and analysis about measurement invariance
 
 ## Reference
 1. Myeongsun Yoon & Roger E. Millsap (2007) Detecting Violations of Factorial Invariance Using Data-Based Specification Searches: A Monte Carlo Study, Structural Equation Modeling: A Multidisciplinary Journal, 14:3, 435-463, DOI: [10.1080/10705510701301677](https://www.tandfonline.com/doi/full/10.1080/10705510701301677)
+
 2.Eunju Jung & Myeongsun Yoon (2016) Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests, Structural Equation Modeling: A Multidisciplinary Journal, 23:4, 567-584, DOI: [10.1080/10705511.2015.1138092](https://www.tandfonline.com/doi/full/10.1080/10705511.2015.1138092)
