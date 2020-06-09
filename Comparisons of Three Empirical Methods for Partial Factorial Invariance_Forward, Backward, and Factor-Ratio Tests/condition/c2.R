@@ -5,7 +5,7 @@ options(digits = 4)
 ####n=250####
 ####CI=.95####
 #generate population data
-reps=100
+reps=1000
 nobs=250
 con.int=.95
 
