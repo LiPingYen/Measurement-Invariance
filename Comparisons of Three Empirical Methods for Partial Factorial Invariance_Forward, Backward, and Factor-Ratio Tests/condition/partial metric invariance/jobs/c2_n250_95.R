@@ -88,7 +88,7 @@ options(digits = 4)
 ####n=250####
 ####CI=.95####
 #generate population data
-reps=20
+reps=1000
 nobs=250
 con.int=.95
 non_con<-c(NA,TRUE,FALSE,TRUE,FALSE,FALSE)
