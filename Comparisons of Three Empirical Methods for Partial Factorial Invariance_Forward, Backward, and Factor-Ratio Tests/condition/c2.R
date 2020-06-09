@@ -5,7 +5,7 @@ options(digits = 4)
 ####n=250####
 ####CI=.95####
 #generate population data
-reps=1000
+reps=100
 nobs=250
 con.int=.95
 
@@ -33,7 +33,7 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
 
 ####CI=.99####
@@ -43,7 +43,7 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
 
 
@@ -64,7 +64,7 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
 
 ####CI=.99####
@@ -74,7 +74,7 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
 
 
@@ -95,7 +95,7 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
 
 ####CI=.99####
@@ -105,5 +105,5 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
                                        tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
 
 #check if the variable is non-invariant or not
-non_all<-det_non(det_list = det_list,non_con =c(NA,FALSE,FALSE,FALSE,FALSE,FALSE))
+non_all<-det_non(det_list = det_list,non_con =c(NA,TRUE,FALSE,TRUE,FALSE,FALSE))
 mean(non_all)
