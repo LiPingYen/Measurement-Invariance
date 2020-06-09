@@ -4,6 +4,7 @@ library(dplyr)
 library(parallel)
 library(data.table)
 library(compare)
+library(future)
 
 ####generate data from multivariate normal distribution####
 #use self-defined function(faster option)
@@ -26,7 +27,7 @@ gen_lam<-function(data,model){
     lam_g1<-parameterEstimates(fit)[1:6,7]
     lam_g2<-parameterEstimates(fit)[21:26,7]
     data.frame(lambda_g1=lam_g1,lambda_g2=lam_g2,v=c("v1","v2","v3","v4","v5","v6"))
-  })
+  },mc.cores =availableCores()-1 )
 }
 
 ####check variable is non-invariant or not####
