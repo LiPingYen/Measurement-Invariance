@@ -60,7 +60,7 @@ non_var_papl<-function(md,dta){
       n=n+1
     }
     non_int_each
-  },mc.cores =availableCores()-1)
+  },mc.cores =availableCores()-5)
 }
 
 #偵測模型中noninvariant variable 和資料中的有沒有相符,perfect recovery rate
@@ -75,10 +75,10 @@ det_non_pl<-function(non_var,non_con){
 true_det_pl<-function(non_var,non_con){
   a<-mclapply(non_var,function(x){
     x%in%non_con
-  },mc.cores =availableCores()-1)
+  },mc.cores =availableCores()-5)
   b<-mclapply(a,function(x){
     table(x)
-  },mc.cores =availableCores()-1)
+  },mc.cores =availableCores()-5)
   names(b)<-NULL
   c<-melt(b)
   c$L1 <- factor(c$L1, seq_along(b))
@@ -92,10 +92,10 @@ true_det_pl<-function(non_var,non_con){
 fal_det_pl<-function(non_var,inv_con){
   a<-mclapply(non_var,function(x){
     x%in%inv_con
-  },mc.cores =availableCores()-1)
+  },mc.cores =availableCores()-5)
   b<-mclapply(a,function(x){
     table(x)
-  },mc.cores =availableCores()-1)
+  },mc.cores =availableCores()-5)
   names(b)<-NULL
   c<-melt(b)
   c$L1 <- factor(c$L1, seq_along(b))
