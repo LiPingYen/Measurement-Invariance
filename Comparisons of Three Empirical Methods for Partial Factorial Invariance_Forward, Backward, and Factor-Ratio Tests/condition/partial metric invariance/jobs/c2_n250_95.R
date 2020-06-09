@@ -119,14 +119,11 @@ det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambd
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
 pe_re_rate_c2_n250_95<-mean(non_all)
-pe_re_rate_c2_n250_95
 
 #type I error
 tyi_err<-det_tyi(det_list = det_list,non_con = non_con)
 tyi_rate_c2_n250_95<-mean(tyi_err)
-tyi_rate_c2_n250_95
 
 #type II error
 tyii_err<-det_tyii(det_list = det_list,non_con = non_con)
 tyii_rate_c2_n250_95<-mean(tyii_err)
-tyii_rate_c2_n250_95
