@@ -14,13 +14,32 @@ gen_dta<-function(nobs,md1,md2){
   dta
 }
 #use self-defined function(faster option)
-gen_dta_test<-function(nobs,la1,phi1,th1,tau1,fac_mean){
+gen_dta<-function(nobs,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_mean2){
   pop_co_ma1<-la1%*%phi1%*%t(la1)+th1
-  pop_mean<-tau1+lambda1%*%fac_mean
-  dta<-data.frame(rmvnorm(nobs,mean = pop_mean,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
-  dta<-dta%>%
-    rename(x1=X1,x2=X2,x3=X3,x4=X4,x5=X5,x6=X6)
+  pop_co_ma2<-la2%*%phi2%*%t(la2)+th2
+  pop_mean1<-tau1+la1%*%fac_mean1
+  pop_mean2<-tau2+la2%*%fac_mean2
+  dta1<-data.frame(rmvnorm(nobs,mean = pop_mean1,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
+  dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
+  dta<-rbind(dta1,dta2)%>%
+    mutate(group=c(rep(1,nobs),rep(2,nobs)))
   dta
+}
+
+
+#create all data once(final picked)(insanely fast)
+gen_dta<-function(nobs,reps,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_mean2){
+  em_list<-vector(length = reps,mode = "list")
+  mclapply(em_list,function(x){
+    pop_co_ma1<-la1%*%phi1%*%t(la1)+th1
+    pop_co_ma2<-la2%*%phi2%*%t(la2)+th2
+    pop_mean1<-tau1+la1%*%fac_mean1
+    pop_mean2<-tau2+la2%*%fac_mean2
+    dta1<-data.frame(rmvnorm(nobs,mean = pop_mean1,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
+    dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
+    rbind(dta1,dta2)%>%
+      mutate(group=c(rep(1,nobs),rep(2,nobs)))
+  })
 }
 
 ####create lambda dataframe from result of cfa####

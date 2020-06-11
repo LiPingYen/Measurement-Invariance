@@ -30,8 +30,8 @@ fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
@@ -49,8 +49,8 @@ mean(tyii_err)
 ####CI=.99####
 con.int=.99
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
@@ -78,8 +78,8 @@ fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
@@ -97,8 +97,8 @@ mean(tyii_err)
 ####CI=.99####
 con.int=.99
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
@@ -118,8 +118,8 @@ fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
@@ -137,8 +137,8 @@ mean(tyii_err)
 ####CI=.99####
 con.int=.99
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)

@@ -7,17 +7,19 @@ library(compare)
 library(future)
 
 ####generate data from multivariate normal distribution####
-#use self-defined function(faster option)
-gen_dta<-function(nobs,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_mean2){
-  pop_co_ma1<-la1%*%phi1%*%t(la1)+th1
-  pop_co_ma2<-la2%*%phi2%*%t(la2)+th2
-  pop_mean1<-tau1+la1%*%fac_mean1
-  pop_mean2<-tau2+la2%*%fac_mean2
-  dta1<-data.frame(rmvnorm(nobs,mean = pop_mean1,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
-  dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
-  dta<-rbind(dta1,dta2)%>%
-    mutate(group=c(rep(1,nobs),rep(2,nobs)))
-  dta
+#create all data once(final picked)(insanely fast)
+gen_dta<-function(nobs,reps,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_mean2){
+  em_list<-vector(length = reps,mode = "list")
+  mclapply(em_list,function(x){
+    pop_co_ma1<-la1%*%phi1%*%t(la1)+th1
+    pop_co_ma2<-la2%*%phi2%*%t(la2)+th2
+    pop_mean1<-tau1+la1%*%fac_mean1
+    pop_mean2<-tau2+la2%*%fac_mean2
+    dta1<-data.frame(rmvnorm(nobs,mean = pop_mean1,sigma = pop_co_ma1,method ="chol"))#rep(mean,)mean要帶公式,tau+lamda*latent mean
+    dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
+    rbind(dta1,dta2)%>%
+      mutate(group=c(rep(1,nobs),rep(2,nobs)))
+  } )
 }
 
 ####create lambda dataframe from result of cfa####
@@ -27,7 +29,7 @@ gen_lam<-function(data,model){
     lam_g1<-parameterEstimates(fit)[1:6,7]
     lam_g2<-parameterEstimates(fit)[21:26,7]
     data.frame(lambda_g1=lam_g1,lambda_g2=lam_g2,v=c("v1","v2","v3","v4","v5","v6"))
-  },mc.cores =3 )
+  })
 }
 
 ####check variable is non-invariant or not####
@@ -48,15 +50,25 @@ check_non<-function(data,con.int){
   dta_inv
 }
 
-#combine generating data and checking non-invariant variable together
-detnon_list<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fac_mean2,testmd,con.int){
-  dta_list<-replicate(n=reps,gen_dta(nobs=nobs,la1 = lambda1,phi1 = phi1,th1 = theta1,tau1 = tau1,fac_mean1 = fac_mean1,
-                                     la2 = lambda2,phi2 = phi2,th2 = theta2,tau2 = tau2,fac_mean2 = fac_mean2),simplify =FALSE )
+#detect non-invariant variable 
+detnon<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fac_mean2,testmd,con.int){
+  dta_list<-gen_dta(reps = reps,nobs=nobs,la1 = lambda1,phi1 = phi1,th1 = theta1,tau1 = tau1,fac_mean1 = fac_mean1,
+                    la2 = lambda2,phi2 = phi2,th2 = theta2,tau2 = tau2,fac_mean2 = fac_mean2)
   lam_dta_list<-gen_lam(data=dta_list,model = testmd)
   lam_dta<-rbindlist(lam_dta_list)
   ch_non<-check_non(data = lam_dta,con.int = con.int)
   ch_non
 }
+
+#combine generating data and checking non-invariant variable together
+detnon_list<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fac_mean2,testmd,con.int){
+  em_list<-vector(length = reps,mode = "list")
+  mclapply(em_list,function(x){
+    detnon(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
+  } )
+}
+
 
 ####perfect recovery rate:completely detects non-invariant variable####
 #non_con: non-invariant variable enter TRUE, NA enter NA, invariant enter FALSE 
@@ -113,8 +125,8 @@ fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
 ####forward method using CI####
-det_list<-replicate(n=reps,detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
-                                       tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int),simplify = FALSE)
+det_list<-detnon_list(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
+                      tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
 
 #check if the variable is non-invariant or not
 non_all<-det_non(det_list = det_list,non_con =non_con)
