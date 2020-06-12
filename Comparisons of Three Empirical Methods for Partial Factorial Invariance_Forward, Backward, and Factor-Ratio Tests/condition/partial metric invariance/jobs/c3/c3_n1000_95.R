@@ -46,8 +46,7 @@ check_non<-function(data,con.int){
   ci4<-t.test(v4_lam$lambda_g1,v4_lam$lambda_g2,alternative = "two.sided",paired = TRUE,conf.level = con.int)$conf.int
   ci5<-t.test(v5_lam$lambda_g1,v5_lam$lambda_g2,alternative = "two.sided",paired = TRUE,conf.level = con.int)$conf.int
   ci6<-t.test(v6_lam$lambda_g1,v6_lam$lambda_g2,alternative = "two.sided",paired = TRUE,conf.level = con.int)$conf.int
-  dta_inv<-c(prod(ci1)>=0,prod(ci2)>=0,prod(ci3)>=0,prod(ci4)>=0,prod(ci5)>=0,prod(ci6)>=0)
-  dta_inv
+  c(prod(ci1)>=0,prod(ci2)>=0,prod(ci3)>=0,prod(ci4)>=0,prod(ci5)>=0,prod(ci6)>=0)
 }
 
 #detect non-invariant variable 
@@ -56,8 +55,7 @@ detnon<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fac_mea
                     la2 = lambda2,phi2 = phi2,th2 = theta2,tau2 = tau2,fac_mean2 = fac_mean2)
   lam_dta_list<-gen_lam(data=dta_list,model = testmd)
   lam_dta<-rbindlist(lam_dta_list)
-  ch_non<-check_non(data = lam_dta,con.int = con.int)
-  ch_non
+  check_non(data = lam_dta,con.int = con.int)
 }
 
 #combine generating data and checking non-invariant variable together
