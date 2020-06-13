@@ -4,7 +4,6 @@ library(dplyr)
 library(parallel)
 library(data.table)
 library(compare)
-library(future)
 
 ####generate data from multivariate normal distribution####
 #create all data once(final picked)(insanely fast)
@@ -19,7 +18,7 @@ gen_dta<-function(nobs,reps,la1,phi1,th1,tau1,fac_mean1,la2,phi2,th2,tau2,fac_me
     dta2<-data.frame(rmvnorm(nobs,mean = pop_mean2,sigma = pop_co_ma2,method ="chol"))
     rbind(dta1,dta2)%>%
       mutate(group=c(rep(1,nobs),rep(2,nobs)))
-  } )
+  },mc.cores = 1)
 }
 
 ####create lambda dataframe from result of cfa####
@@ -29,7 +28,7 @@ gen_lam<-function(data,model){
     lam_g1<-parameterEstimates(fit)[1:6,7]
     lam_g2<-parameterEstimates(fit)[21:26,7]
     data.frame(lambda_g1=lam_g1,lambda_g2=lam_g2,v=c("v1","v2","v3","v4","v5","v6"))
-  })
+  },mc.cores = 1)
 }
 
 ####check variable is non-invariant or not####
@@ -64,7 +63,7 @@ detnon_list<-function(reps,nobs,la1,la2,phi1,phi2,th1,th2,tau1,tau2,fac_mean1,fa
   mclapply(em_list,function(x){
     detnon(reps=reps,nobs=nobs,la1=lambda1,la2=lambda2,phi1=phi1,phi2=phi2,th1=theta1,th2=theta2,
            tau1=tau1,tau2=tau2,fac_mean1=fac_mean1,fac_mean2=fac_mean2,testmd=mdconf,con.int=con.int)
-  } )
+  },mc.cores = 12)
 }
 
 
@@ -98,7 +97,7 @@ options(digits = 4)
 ####n=500####
 ####CI=.99####
 #generate population data
-reps=1000
+reps=500
 nobs=500
 con.int=.99
 non_con<-c(NA,FALSE,FALSE,FALSE,FALSE,FALSE)
