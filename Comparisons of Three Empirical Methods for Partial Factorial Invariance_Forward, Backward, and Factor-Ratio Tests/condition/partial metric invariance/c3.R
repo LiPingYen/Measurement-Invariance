@@ -1,9 +1,12 @@
 options(digits = 4)
 ##large difference model
 
-####PMI####
-####n=250####
-####CI=.95####
+#PMI
+
+# n=250 -------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 250
@@ -29,7 +32,7 @@ mdconf <- '
 fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -61,9 +64,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####CI=.99####
+#CI=.99
 con.int = .99
-####forward method using CI####
+
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -95,8 +99,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####n=500####
-####CI=.95####
+# n=500 -------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 500
@@ -139,9 +145,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####CI=.99####
+#CI=.99
 con.int = .99
-####forward method using CI####
+
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -159,6 +166,7 @@ det_list <-
     testmd = mdconf,
     con.int = con.int
   )
+
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
@@ -172,13 +180,14 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####n=1000####
-####CI=.95####
+# n=1000 ------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 1000
 con.int = .95
-
 
 #test model
 mdconf <- '
@@ -217,9 +226,9 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####CI=.99####
+#CI=.99
 con.int = .99
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -237,6 +246,7 @@ det_list <-
     testmd = mdconf,
     con.int = con.int
   )
+
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)

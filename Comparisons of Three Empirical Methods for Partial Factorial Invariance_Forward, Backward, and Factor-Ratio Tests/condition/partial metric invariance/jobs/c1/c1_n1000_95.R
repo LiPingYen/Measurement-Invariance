@@ -5,7 +5,10 @@ library(parallel)
 library(data.table)
 library(compare)
 
-####generate data from multivariate normal distribution####
+
+# generate data from multivariate normal distribution ---------------------
+
+
 #create all data once(final picked)(insanely fast)
 gen_dta <-
   function(nobs,
@@ -45,7 +48,10 @@ gen_dta <-
     }, mc.cores = 1)
   }
 
-####create lambda dataframe from result of cfa####
+
+# create lambda dataframe from result of cfa ------------------------------
+
+
 gen_lam <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
@@ -61,7 +67,10 @@ gen_lam <- function(data, model) {
   }, mc.cores = 1)
 }
 
-####check variable is non-invariant or not####
+
+# check variable is non-invariant or not ----------------------------------
+
+
 check_non <- function(data, con.int) {
   v1_lam <- data %>% filter(., v == "v1")
   v2_lam <- data %>% filter(., v == "v2")
@@ -201,7 +210,10 @@ detnon_list <-
   }
 
 
-####perfect recovery rate:completely detects non-invariant variable####
+
+# perfect recovery rate:completely detects non-invariant variable ---------
+
+
 #non_con: non-invariant variable enter TRUE, NA enter NA, invariant enter FALSE
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
@@ -209,14 +221,18 @@ det_non <- function(det_list, non_con) {
   })
 }
 
-####Type I error####
+# model-level Type I error ------------------------------------------------
+
+
 det_tyi <- function(det_list, non_con) {
   sapply(det_list, function(x) {
     ifelse(x[3] == TRUE, 1, ifelse(x[5] == TRUE, 1, ifelse(x[6] == TRUE, 1, 0)))
   })
 }
 
-####Type II error####
+# model-level Type II error -----------------------------------------------
+
+
 det_tyii <- function(det_list, non_con) {
   sapply(det_list, function(x) {
     ifelse(x[2] == FALSE, 1, ifelse(x[4] == FALSE, 1, 0))
@@ -227,9 +243,12 @@ det_tyii <- function(det_list, non_con) {
 ##baseline model
 options(digits = 4)
 
-####PMI####
-####n=1000####
-####CI=.95####
+#PMI
+
+# n=1000 ------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 500
 nobs = 1000
@@ -255,7 +274,7 @@ mdconf <- '
 fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,

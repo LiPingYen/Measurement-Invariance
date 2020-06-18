@@ -4,7 +4,10 @@ library(parallel)
 library(data.table)
 library(compare)
 
-####generate data from multivariate normal distribution####
+
+# generate data from multivariate normal distribution ---------------------
+
+
 #use simulateData(slower option)
 gen_dta <- function(nobs, md1, md2) {
   dta_1 <-
@@ -101,7 +104,10 @@ gen_dta <-
     })
   }
 
-####create lambda dataframe from result of cfa####
+
+# create lambda dataframe from result of cfa ------------------------------
+
+
 gen_lam <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
@@ -117,7 +123,10 @@ gen_lam <- function(data, model) {
   })
 }
 
-####check variable is non-invariant or not####
+
+# check variable is non-invariant or not -----------------------------------
+
+
 check_non <- function(data, con.int) {
   v1_lam <- data %>% filter(., v == "v1")
   v2_lam <- data %>% filter(., v == "v2")
@@ -183,7 +192,10 @@ check_non <- function(data, con.int) {
   )
 }
 
-####perfect recovery rate:completely detects non-invariant variable####
+
+# perfect recovery rate:completely detects non-invariant variable ---------
+
+
 #combine generating data and checking non-invariant variable together
 detnon_list <-
   function(reps,
@@ -229,5 +241,24 @@ det_non <- function(det_list, non_con) {
     non_inv <- vector()
     ifelse(compare(x, non_con)$result, non_inv <- 1, non_inv <- 0)
     non_inv
+  })
+}
+
+# model-level Type I error ------------------------------------------------
+
+
+det_tyi <- function(det_list, non_con) {
+  sapply(det_list, function(x) {
+    ifelse(x[3] == TRUE, 1, ifelse(x[5] == TRUE, 1, ifelse(x[6] == TRUE, 1, 0)))
+  })
+}
+
+
+# model-level Type II error -----------------------------------------------
+
+
+det_tyii <- function(det_list, non_con) {
+  sapply(det_list, function(x) {
+    ifelse(x[2] == FALSE, 1, ifelse(x[4] == FALSE, 1, 0))
   })
 }

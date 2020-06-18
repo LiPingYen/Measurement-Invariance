@@ -1,9 +1,12 @@
 options(digits = 4)
 ##baseline model
 
-####PMI####
-####n=250####
-####CI=.95####
+#PMI
+
+# n=250 -------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 250
@@ -29,7 +32,7 @@ mdconf <- '
 fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
-####forward method using CI####
+#forward method using CI 
 det_list <-
   detnon_list(
     reps = reps,
@@ -61,9 +64,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####CI=.99####
+#CI=.99
 con.int = .99
-####forward method using CI####
+
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -91,8 +95,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####n=500####
-####CI=.95####
+# n=500 -------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 500
@@ -103,7 +109,7 @@ mdconf <- '
 fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -135,9 +141,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####CI=.99####
+#CI=.99
 con.int = .99
-####forward method using CI####
+
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -169,8 +176,10 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
-####n=1000####
-####CI=.95####
+# n=1000 ------------------------------------------------------------------
+
+
+#CI=.95
 #generate population data
 reps = 1000
 nobs = 1000
@@ -181,7 +190,7 @@ mdconf <- '
 fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -212,9 +221,10 @@ mean(tyi_err)
 tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
-####CI=.99####
+
+#CI=.99
 con.int = .99
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
