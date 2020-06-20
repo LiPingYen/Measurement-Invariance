@@ -1,5 +1,5 @@
 options(digits = 4)
-##baseline model
+##small difference model
 
 #PMI
 
@@ -8,10 +8,10 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 500
 nobs = 250
 con.int = .95
-non_con <- c(NA, FALSE, FALSE, FALSE, FALSE, FALSE)
+non_con <- c(NA, TRUE, FALSE, TRUE, FALSE, FALSE)
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
@@ -21,10 +21,10 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(rep(0.7, 6), nrow = 6)
+lambda2 <- matrix(c(0.7, 0.5, 0.7, 0.5, 0.7, 0.7), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(rep(1, 6), nrow = 6)
+tau2 <- matrix(c(1, 0.8, 1, 0.8, 1, 1), nrow = 6)
 fac_mean2 = 0.2
 
 #test model
@@ -32,7 +32,7 @@ mdconf <- '
 fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
 '
 
-#forward method using CI 
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -66,7 +66,6 @@ mean(tyii_err)
 
 #CI=.99
 con.int = .99
-
 #forward method using CI
 det_list <-
   detnon_list(
@@ -89,6 +88,10 @@ det_list <-
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
+
+#type I error
+tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
@@ -109,7 +112,7 @@ mdconf <- '
 fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
-#forward method using CI
+####forward method using CI####
 det_list <-
   detnon_list(
     reps = reps,
@@ -167,19 +170,11 @@ det_list <-
 non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
-#type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
-mean(tyi_err)
-
-#type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
-mean(tyii_err)
-
 
 # n=1000 ------------------------------------------------------------------
 
 
-#CI=.95
+####CI=.95####
 #generate population data
 reps = 1000
 nobs = 1000
@@ -224,7 +219,8 @@ mean(tyii_err)
 
 #CI=.99
 con.int = .99
-#forward method using CI
+
+#orward method using CI
 det_list <-
   detnon_list(
     reps = reps,

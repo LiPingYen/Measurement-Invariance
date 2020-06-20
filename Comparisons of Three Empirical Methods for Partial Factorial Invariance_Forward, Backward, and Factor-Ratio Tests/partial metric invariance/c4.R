@@ -1,5 +1,5 @@
 options(digits = 4)
-##large difference model
+##mixed-size difference model
 
 #PMI
 
@@ -8,7 +8,7 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 500
 nobs = 250
 con.int = .95
 non_con <- c(NA, TRUE, FALSE, TRUE, FALSE, FALSE)
@@ -21,10 +21,10 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(c(0.7, 0.3, 0.7, 0.3, 0.7, 0.7), nrow = 6)
+lambda2 <- matrix(c(0.7, 0.4, 0.7, 0.2, 0.7, 0.7), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(c(1, 0.6, 1, 0.6, 1, 1), nrow = 6)
+tau2 <- matrix(c(1, 0.7, 1, 0.5, 1, 1), nrow = 6)
 fac_mean2 = 0.2
 
 #test model
@@ -113,7 +113,7 @@ mdconf <- '
 fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
 '
 
-####forward method using CI####
+#forward method using CI
 det_list <-
   detnon_list(
     reps = reps,
@@ -180,6 +180,7 @@ tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
 mean(tyii_err)
 
 
+
 # n=1000 ------------------------------------------------------------------
 
 
@@ -228,6 +229,7 @@ mean(tyii_err)
 
 #CI=.99
 con.int = .99
+
 #forward method using CI
 det_list <-
   detnon_list(
