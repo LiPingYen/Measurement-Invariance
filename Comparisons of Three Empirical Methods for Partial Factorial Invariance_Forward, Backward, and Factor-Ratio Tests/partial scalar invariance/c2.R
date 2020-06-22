@@ -30,6 +30,7 @@ fac_mean2 = 0.2
 #test model
 mdconf <- '
 fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
+X1~c(1,1)*1
 '
 
 #forward method using CI
