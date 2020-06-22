@@ -58,8 +58,8 @@ gen_tau <- function(data, model) {
                model = model,
                group = "group",
                group.equal=c("loadings"))
-    tau_g1 <- parameterEstimates(fit)[14:19, 7]
-    tau_g2 <- parameterEstimates(fit)[34:39, 7]
+    tau_g1 <- parameterEstimates(fit)[c(7,15,16,17,18,17),7]
+    tau_g2 <- parameterEstimates(fit)[c(27,35,36,37,38,39),7]
     data.frame(
       tau_g1 = tau_g1,
       tau_g2 = tau_g2,
