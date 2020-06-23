@@ -149,10 +149,10 @@ gen_dta <-
     })
   }
 
-reps = 1000
+reps = 100
 nobs = 250
 con.int = .95
-non_con <- c(NA, FALSE, FALSE, FALSE, FALSE, FALSE)
+non_con <- c(NA, TRUE, FALSE, TRUE, FALSE, FALSE)
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
@@ -162,11 +162,17 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(rep(0.7, 6), nrow = 6)
+lambda2 <- matrix(c(0.7, 0.5, 0.7, 0.5, 0.7, 0.7), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(rep(1, 6), nrow = 6)
+tau2 <- matrix(c(1, 0.8, 1, 0.8, 1, 1), nrow = 6)
 fac_mean2 = 0.2
+
+#test model
+mdconf <- '
+fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
+X1~c(1,1)*1
+'
 
 dta_test_list <-
   gen_dta(
@@ -183,3 +189,15 @@ dta_test_list <-
     fac_mean1 = fac_mean1,
     fac_mean2 = fac_mean2
   )
+
+fit <- cfa(data = dta_test_list[[1]],
+           model = mdconf,
+           group = "group",
+           group.equal=c("loadings"))
+
+summary(fit)
+
+tau_test<-gen_tau(data = dta_test_list,model = mdconf)
+tau_dta_test <- rbindlist(tau_test)
+
+check_lsit<-check_non(data = tau_dta_test,con.int = con.int)
