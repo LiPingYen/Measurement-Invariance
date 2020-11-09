@@ -8,7 +8,7 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 500
+reps = 1000
 nobs = 250
 con.int = .95
 non_con <- c(NA, FALSE, FALSE, FALSE, FALSE, FALSE)
@@ -29,7 +29,9 @@ fac_mean2 = 0.2
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
+fac1=~0.7*X1+X2+X3+X4+X5+X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 #forward method using CI 
@@ -106,7 +108,9 @@ con.int = .95
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
+fac1=~0.7*X1+X2+X3+X4+X5+X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 #forward method using CI
@@ -187,7 +191,9 @@ con.int = .95
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
+fac1=~0.7*X1+X2+X3+X4+X5+X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 #forward method using CI

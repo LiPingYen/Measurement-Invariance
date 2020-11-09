@@ -21,7 +21,7 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(c(0.7, 0.3, 0.7, 0.3, 0.7, 0.7), nrow = 6)
+lambda2 <- matrix(rep(0.7, 6), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
 tau2 <- matrix(c(1, 0.6, 1, 0.6, 1, 1), nrow = 6)
@@ -29,8 +29,9 @@ fac_mean2 = 0.2
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
-X1~c(1,1)*1
+fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 #forward method using CI
@@ -111,7 +112,9 @@ con.int = .95
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
+fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 ####forward method using CI####
@@ -192,7 +195,9 @@ con.int = .95
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*x1+x2+x3+x4+x5+x6
+fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 ####forward method using CI####

@@ -56,10 +56,9 @@ gen_tau <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
                model = model,
-               group = "group",
-               group.equal=c("loadings"))
-    tau_g1 <- parameterEstimates(fit)[c(7,15,16,17,18,17),7]
-    tau_g2 <- parameterEstimates(fit)[c(27,35,36,37,38,39),7]
+               group = "group")
+    tau_g1 <- parameterEstimates(fit)[c(8, 16, 17, 18, 19, 20), 7]
+    tau_g2 <- parameterEstimates(fit)[c(28, 36, 37, 38, 39, 40), 7]
     data.frame(
       tau_g1 = tau_g1,
       tau_g2 = tau_g2,
@@ -81,8 +80,8 @@ check_non <- function(data, con.int) {
   v6_tau <- data %>% filter(., v == "v6")
   ci1 <-
     t.test(
-      v1_tau$tau_g1,
-      v1_tau$tau_g2,
+      round(v1_tau$tau_g1, digits = 3),
+      round(v1_tau$tau_g2, digits = 3),
       alternative = "two.sided",
       paired = TRUE,
       conf.level = con.int
@@ -225,7 +224,7 @@ det_non <- function(det_list, non_con) {
 # model-level Type I error ------------------------------------------------
 
 
-det_tyi <- function(det_list, non_con) {
+det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(x[3] == TRUE, 1, ifelse(x[5] == TRUE, 1, ifelse(x[6] == TRUE, 1, 0)))
   })
@@ -235,7 +234,7 @@ det_tyi <- function(det_list, non_con) {
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(x[2] == FALSE, 1, ifelse(x[4] == FALSE, 1, 0))
   })
@@ -264,7 +263,7 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(c(0.7, 0.4, 0.7, 0.2, 0.7, 0.7), nrow = 6)
+lambda2 <- matrix(rep(0.7, 6), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
 tau2 <- matrix(c(1, 0.7, 1, 0.5, 1, 1), nrow = 6)
@@ -272,8 +271,9 @@ fac_mean2 = 0.2
 
 #test model
 mdconf <- '
-fac1=~c(v1,v1)*X1+X2+X3+X4+X5+X6
-X1~c(1,1)*1
+fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1~c(0,NA)*1
+X1~tau*1
 '
 
 #forward method using CI

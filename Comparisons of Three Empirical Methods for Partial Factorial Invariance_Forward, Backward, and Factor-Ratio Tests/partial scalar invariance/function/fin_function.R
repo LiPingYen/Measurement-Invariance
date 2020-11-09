@@ -56,10 +56,9 @@ gen_tau <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
                model = model,
-               group = "group",
-               group.equal=c("loadings"))
-    tau_g1 <- parameterEstimates(fit)[c(7,15,16,17,18,17),7]
-    tau_g2 <- parameterEstimates(fit)[c(27,35,36,37,38,39),7]
+               group = "group")
+    tau_g1 <- parameterEstimates(fit)[c(8, 16, 17, 18, 19, 20), 7]
+    tau_g2 <- parameterEstimates(fit)[c(28, 36, 37, 38, 39, 40), 7]
     data.frame(
       tau_g1 = tau_g1,
       tau_g2 = tau_g2,
@@ -81,8 +80,8 @@ check_non <- function(data, con.int) {
   v6_tau <- data %>% filter(., v == "v6")
   ci1 <-
     t.test(
-      v1_tau$tau_g1,
-      v1_tau$tau_g2,
+      round(v1_tau$tau_g1, digits = 3),
+      round(v1_tau$tau_g2, digits = 3),
       alternative = "two.sided",
       paired = TRUE,
       conf.level = con.int
@@ -225,7 +224,7 @@ det_non <- function(det_list, non_con) {
 # model-level Type I error ------------------------------------------------
 
 
-det_tyi <- function(det_list, non_con) {
+det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(x[3] == TRUE, 1, ifelse(x[5] == TRUE, 1, ifelse(x[6] == TRUE, 1, 0)))
   })
@@ -235,7 +234,7 @@ det_tyi <- function(det_list, non_con) {
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(x[2] == FALSE, 1, ifelse(x[4] == FALSE, 1, 0))
   })
