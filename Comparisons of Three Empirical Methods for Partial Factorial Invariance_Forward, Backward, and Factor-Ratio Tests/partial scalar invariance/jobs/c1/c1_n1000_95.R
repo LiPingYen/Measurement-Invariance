@@ -303,7 +303,3 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
 tyi_rate <- mean(tyi_err)
-
-#type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
-tyii_rate <- mean(tyii_err)
