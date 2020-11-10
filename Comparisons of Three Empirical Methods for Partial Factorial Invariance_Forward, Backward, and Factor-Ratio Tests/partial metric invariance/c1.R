@@ -58,11 +58,11 @@ non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+tyi_err <- det_tyi(det_list = det_list)
 mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
 
 
@@ -89,11 +89,11 @@ det_list <-
   )
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
+non_all <- det_non(det_list = det_list)
 mean(non_all)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
 
 
@@ -137,11 +137,11 @@ non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+tyi_err <- det_tyi(det_list = det_list)
 mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
 
 
@@ -172,11 +172,11 @@ non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+tyi_err <- det_tyi(det_list = det_list)
 mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
 
 
@@ -220,11 +220,11 @@ non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+tyi_err <- det_tyi(det_list = det_list)
 mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
 
 
@@ -254,9 +254,9 @@ non_all <- det_non(det_list = det_list, non_con = non_con)
 mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list, non_con = non_con)
+tyi_err <- det_tyi(det_list = det_list)
 mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list, non_con = non_con)
+tyii_err <- det_tyii(det_list = det_list)
 mean(tyii_err)
