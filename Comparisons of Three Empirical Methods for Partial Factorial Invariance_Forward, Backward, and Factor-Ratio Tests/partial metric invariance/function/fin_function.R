@@ -5,6 +5,7 @@ library(parallel)
 library(data.table)
 library(compare)
 
+
 # generate data from multivariate normal distribution ---------------------
 
 
@@ -48,7 +49,7 @@ gen_dta <-
   }
 
 
-# create lambda dataframe from result of cfa ------------------------------
+# create difference of lambda dataframe from result of cfa ------------------------------
 
 
 gen_lam <- function(data, model) {
@@ -56,185 +57,51 @@ gen_lam <- function(data, model) {
     fit <- cfa(data = x,
                model = model,
                group = "group")
-    lam_g1 <- parameterEstimates(fit)[1:6, 7]
-    lam_g2 <- parameterEstimates(fit)[21:26, 7]
-    data.frame(
-      lambda_g1 = lam_g1,
-      lambda_g2 = lam_g2,
-      v = c("v1", "v2", "v3", "v4", "v5", "v6")
-    )
-  }, mc.cores = 1)
+    dlp <- parameterEstimates(fit)[41:45, 10]
+    data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
+               diff_lam_pvalue = dlp)
+  }, mc.cores = 12)
 }
 
 
 # check variable is non-invariant or not ----------------------------------
 
 
-check_non <- function(data, con.int) {
-  v1_lam <- data %>% filter(., v == "v1")
-  v2_lam <- data %>% filter(., v == "v2")
-  v3_lam <- data %>% filter(., v == "v3")
-  v4_lam <- data %>% filter(., v == "v4")
-  v5_lam <- data %>% filter(., v == "v5")
-  v6_lam <- data %>% filter(., v == "v6")
-  ci1 <-
-    t.test(
-      v1_lam$lambda_g1,
-      v1_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  ci2 <-
-    t.test(
-      v2_lam$lambda_g1,
-      v2_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  ci3 <-
-    t.test(
-      v3_lam$lambda_g1,
-      v3_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  ci4 <-
-    t.test(
-      v4_lam$lambda_g1,
-      v4_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  ci5 <-
-    t.test(
-      v5_lam$lambda_g1,
-      v5_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  ci6 <-
-    t.test(
-      v6_lam$lambda_g1,
-      v6_lam$lambda_g2,
-      alternative = "two.sided",
-      paired = TRUE,
-      conf.level = con.int
-    )$conf.int
-  c(
-    prod(ci1) >= 0,
-    prod(ci2) >= 0,
-    prod(ci3) >= 0,
-    prod(ci4) >= 0,
-    prod(ci5) >= 0,
-    prod(ci6) >= 0
-  )
+check_non <- function(data, p_value) {
+  em_list <- vector(length = reps, mode = "list")
+  mclapply(data, function(x) {
+    c(x[1, 2] < p_value,
+      x[2, 2] < p_value,
+      x[3, 2] < p_value,
+      x[4, 2] < p_value,
+      x[5, 2] < p_value)
+  }, mc.cores = 1)
 }
-
-#detect non-invariant variable
-detnon <-
-  function(reps,
-           nobs,
-           la1,
-           la2,
-           phi1,
-           phi2,
-           th1,
-           th2,
-           tau1,
-           tau2,
-           fac_mean1,
-           fac_mean2,
-           testmd,
-           con.int) {
-    dta_list <-
-      gen_dta(
-        reps = reps,
-        nobs = nobs,
-        la1 = lambda1,
-        phi1 = phi1,
-        th1 = theta1,
-        tau1 = tau1,
-        fac_mean1 = fac_mean1,
-        la2 = lambda2,
-        phi2 = phi2,
-        th2 = theta2,
-        tau2 = tau2,
-        fac_mean2 = fac_mean2
-      )
-    lam_dta_list <- gen_lam(data = dta_list, model = testmd)
-    lam_dta <- rbindlist(lam_dta_list)
-    check_non(data = lam_dta, con.int = con.int)
-  }
-
-#combine generating data and checking non-invariant variable together
-detnon_list <-
-  function(reps,
-           nobs,
-           la1,
-           la2,
-           phi1,
-           phi2,
-           th1,
-           th2,
-           tau1,
-           tau2,
-           fac_mean1,
-           fac_mean2,
-           testmd,
-           con.int) {
-    em_list <- vector(length = reps, mode = "list")
-    mclapply(em_list, function(x) {
-      detnon(
-        reps = reps,
-        nobs = nobs,
-        la1 = la1,
-        la2 = la2,
-        phi1 = phi1,
-        phi2 = phi2,
-        th1 = th1,
-        th2 = th2,
-        tau1 = tau1,
-        tau2 = tau2,
-        fac_mean1 = fac_mean1,
-        fac_mean2 = fac_mean2,
-        testmd = mdconf,
-        con.int = con.int
-      )
-    }, mc.cores = 12)
-  }
-
 
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
-#non_con: non-invariant variable enter TRUE, NA enter NA, invariant enter FALSE
+#non_con: non-invariant variable enter TRUE, invariant enter FALSE
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
     ifelse(compare(x, non_con)$result, 1, 0)
   })
 }
 
-
 # model-level Type I error ------------------------------------------------
 
 
-det_tyi <- function(det_list, non_con) {
+det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(x[3] == TRUE, 1, ifelse(x[5] == TRUE, 1, ifelse(x[6] == TRUE, 1, 0)))
+    ifelse(x[2] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0)))
   })
 }
-
 
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(x[2] == FALSE, 1, ifelse(x[4] == FALSE, 1, 0))
+    ifelse(x[1] == FALSE, 1, ifelse(x[3] == FALSE, 1, 0))
   })
 }
