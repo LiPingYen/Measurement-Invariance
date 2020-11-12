@@ -52,14 +52,14 @@ gen_dta <-
 # create difference of lambda dataframe from result of cfa ------------------------------
 
 
-gen_lam <- function(data, model) {
+gen_tau <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
                model = model,
                group = "group")
-    dlp <- parameterEstimates(fit)[41:45, 10]
-    data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
-               diff_lam_pvalue = dlp)
+    dtp <- parameterEstimates(fit)[41:45, 10]
+    data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
+               diff_tau_pvalue = dtp)
   }, mc.cores = 12)
 }
 
