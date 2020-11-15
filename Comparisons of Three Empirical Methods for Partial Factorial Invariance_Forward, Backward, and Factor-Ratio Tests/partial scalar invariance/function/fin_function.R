@@ -52,14 +52,14 @@ gen_dta <-
 # create difference of lambda dataframe from result of cfa ------------------------------
 
 
-gen_lam <- function(data, model) {
+gen_tau <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
                model = model,
                group = "group")
-    dlp <- parameterEstimates(fit)[41:45, 10]
-    data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
-               diff_lam_pvalue = dlp)
+    dtp <- parameterEstimates(fit)[41:45, 10]
+    data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
+               diff_tau_pvalue = dtp)
   }, mc.cores = 12)
 }
 
@@ -85,6 +85,17 @@ check_non <- function(data, p_value) {
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
     ifelse(compare(x, non_con)$result, 1, 0)
+  })
+}
+
+# model-level Type I error (for baseline model only)------------------------------------------------
+
+
+det_tyi <- function(det_list) {
+  sapply(det_list, function(x) {
+    ifelse(x[1] == TRUE, 1, ifelse(x[2] == TRUE, 1, ifelse(
+      x[3] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0))
+    )))
   })
 }
 

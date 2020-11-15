@@ -8,10 +8,10 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 500
+reps = 1000
 nobs = 250
-con.int = .95
-non_con <- c(NA, TRUE, FALSE, TRUE, FALSE, FALSE)
+p_value = 0.05
+non_con <- c(TRUE, FALSE, TRUE, FALSE, FALSE)#dt2,dt3,dt4,dt5,dt6
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
@@ -29,77 +29,88 @@ fac_mean2 = 0.2
 
 #test model
 mdconf <- '
-fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1=~0.7*X1+lm2*X2+lm3*X3+lm4*X4+lm5*X5+lm6*X6
 fac1~c(0,NA)*1
 X1~tau*1
+X2~c(t21,t22)*1
+X3~c(t31,t32)*1
+X4~c(t41,t42)*1
+X5~c(t51,t52)*1
+X6~c(t61,t62)*1
+dt2:=t21-t22
+dt3:=t31-t32
+dt4:=t41-t42
+dt5:=t51-t52
+dt6:=t61-t62
 '
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
-con.int = .99
+p_value = 0.01
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
-
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 # n=500 -------------------------------------------------------------------
@@ -109,81 +120,92 @@ mean(tyii_err)
 #generate population data
 reps = 1000
 nobs = 500
-con.int = .95
+p_value = 0.05
 
 #test model
 mdconf <- '
-fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1=~0.7*X1+lm2*X2+lm3*X3+lm4*X4+lm5*X5+lm6*X6
 fac1~c(0,NA)*1
 X1~tau*1
+X2~c(t21,t22)*1
+X3~c(t31,t32)*1
+X4~c(t41,t42)*1
+X5~c(t51,t52)*1
+X6~c(t61,t62)*1
+dt2:=t21-t22
+dt3:=t31-t32
+dt4:=t41-t42
+dt5:=t51-t52
+dt6:=t61-t62
 '
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
-con.int = .99
+p_value = 0.01
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
-
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -193,77 +215,89 @@ mean(tyii_err)
 #generate population data
 reps = 1000
 nobs = 1000
-con.int = .95
+p_value = 0.05
 
 #test model
 mdconf <- '
-fac1=~0.7*X1+v2*X2+v3*X3+v4*X4+v5*X5+v6*X6
+fac1=~0.7*X1+lm2*X2+lm3*X3+lm4*X4+lm5*X5+lm6*X6
 fac1~c(0,NA)*1
 X1~tau*1
+X2~c(t21,t22)*1
+X3~c(t31,t32)*1
+X4~c(t41,t42)*1
+X5~c(t51,t52)*1
+X6~c(t61,t62)*1
+dt2:=t21-t22
+dt3:=t31-t32
+dt4:=t41-t42
+dt5:=t51-t52
+dt6:=t61-t62
 '
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
-con.int = .99
+p_value = 0.01
 
 #forward method using CI
-det_list <-
-  detnon_list(
-    reps = reps,
-    nobs = nobs,
-    la1 = lambda1,
-    la2 = lambda2,
-    phi1 = phi1,
-    phi2 = phi2,
-    th1 = theta1,
-    th2 = theta2,
-    tau1 = tau1,
-    tau2 = tau2,
-    fac_mean1 = fac_mean1,
-    fac_mean2 = fac_mean2,
-    testmd = mdconf,
-    con.int = con.int
-  )
+dta <- gen_dta(
+  reps = reps,
+  nobs = nobs,
+  la1 = lambda1,
+  la2 = lambda2,
+  phi1 = phi1,
+  phi2 = phi2,
+  th1 = theta1,
+  th2 = theta2,
+  tau1 = tau1,
+  tau2 = tau2,
+  fac_mean1 = fac_mean1,
+  fac_mean2 = fac_mean2
+)
+
+tau_list <- gen_tau(data = dta, model = mdconf)
+
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
-non_all <- det_non(det_list = det_list, non_con = non_con)
-mean(non_all)
+non_all <- det_non(det_list = non_v_list, non_con = non_con)
+pe_re_rate <- mean(non_all)
 
 #type I error
-tyi_err <- det_tyi(det_list = det_list)
-mean(tyi_err)
+tyi_err <- det_tyi(det_list = non_v_list)
+tyi_rate <- mean(tyi_err)
 
 #type II error
-tyii_err <- det_tyii(det_list = det_list)
-mean(tyii_err)
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
