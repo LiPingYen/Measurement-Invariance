@@ -134,7 +134,7 @@ options(digits = 4)
 reps = 1000
 nobs = 1000
 p_value = 0.01
-non_con <- c(TRUE, FALSE, TRUE, FALSE, FALSE)#dt2,dt3,dt4,dt5,dt6
+non_con <- c(FALSE, FALSE, FALSE, FALSE, FALSE)#dt2,dt3,dt4,dt5,dt6
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
