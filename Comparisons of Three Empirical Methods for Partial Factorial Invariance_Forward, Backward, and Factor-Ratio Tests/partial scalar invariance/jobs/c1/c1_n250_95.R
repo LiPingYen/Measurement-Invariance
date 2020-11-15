@@ -88,22 +88,26 @@ det_non <- function(det_list, non_con) {
   })
 }
 
-<<<<<<< HEAD
 # model-level Type I error (for baseline model only)------------------------------------------------
-=======
-# model-level Type I error ------------------------------------------------
->>>>>>> d707ba2c418d664f88fcbeabbedc2a1336b768e6
 
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-<<<<<<< HEAD
     ifelse(x[1] == TRUE, 1, ifelse(x[2] == TRUE, 1, ifelse(
       x[3] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0))
     )))
-=======
+  })
+}
+
+# model-level Type I error ------------------------------------------------
+
+
+det_tyi <- function(det_list) {
+  sapply(det_list, function(x) {
+    ifelse(x[1] == TRUE, 1, ifelse(x[2] == TRUE, 1, ifelse(
+      x[3] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0))
+    )))
     ifelse(x[2] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0)))
->>>>>>> d707ba2c418d664f88fcbeabbedc2a1336b768e6
   })
 }
 
