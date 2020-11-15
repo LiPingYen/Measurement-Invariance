@@ -67,6 +67,10 @@ pe_re_rate <- mean(non_all)
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
+
 
 #CI=.99
 p_value = 0.01
@@ -98,6 +102,10 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 # n=500 -------------------------------------------------------------------
@@ -149,6 +157,10 @@ pe_re_rate <- mean(non_all)
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
+
 
 #CI=.99
 p_value = 0.01
@@ -180,6 +192,10 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -231,6 +247,10 @@ pe_re_rate <- mean(non_all)
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)
+
 
 #CI=.99
 p_value = 0.01
@@ -262,3 +282,7 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#type II error
+tyii_err <- det_tyii(det_list = non_v_list)
+tyii_rate <- mean(tyii_err)

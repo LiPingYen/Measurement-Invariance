@@ -5,10 +5,10 @@ baseline,500,0.95,0.817,0.183,
 baseline,500,0.99,0.969,0.031,
 baseline,1000,0.95,0.83,0.17,
 baseline,1000,0.99,0.967,0.033,
-small_difference,250,0.95,,,
-small_difference,250,0.99,,,
-small_difference,500,0.95,,,
-small_difference,500,0.99,,,
+small_difference,250,0.95,0.701,0.122,0.216
+small_difference,250,0.99,0.519,0.027,0.468
+small_difference,500,0.95,0.876,0.114,0.02
+small_difference,500,0.99,0.924,0.022,0.057
 small_difference,1000,0.95,0.886,0.114,0
 small_difference,1000,0.99,0.981,0.018,0.001
 large_difference,250,0.95,,,
