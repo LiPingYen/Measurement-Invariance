@@ -78,6 +78,7 @@ check_non <- function(data, p_value) {
   }, mc.cores = 1)
 }
 
+
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
@@ -87,6 +88,7 @@ det_non <- function(det_list, non_con) {
     ifelse(compare(x, non_con)$result, 1, 0)
   })
 }
+
 
 # model-level Type I error (for baseline model only)------------------------------------------------
 
@@ -99,17 +101,6 @@ det_tyi <- function(det_list) {
   })
 }
 
-# model-level Type I error ------------------------------------------------
-
-
-det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(x[1] == TRUE, 1, ifelse(x[2] == TRUE, 1, ifelse(
-      x[3] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0))
-    )))
-    ifelse(x[2] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0)))
-  })
-}
 
 # model-level Type II error -----------------------------------------------
 
