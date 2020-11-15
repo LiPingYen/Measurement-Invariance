@@ -93,9 +93,13 @@ det_non <- function(det_list, non_con) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
+<<<<<<< HEAD
     ifelse(x[1] == TRUE, 1, ifelse(x[2] == TRUE, 1, ifelse(
       x[3] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0))
     )))
+=======
+    ifelse(x[2] == TRUE, 1, ifelse(x[4] == TRUE, 1, ifelse(x[5] == TRUE, 1, 0)))
+>>>>>>> d707ba2c418d664f88fcbeabbedc2a1336b768e6
   })
 }
 
