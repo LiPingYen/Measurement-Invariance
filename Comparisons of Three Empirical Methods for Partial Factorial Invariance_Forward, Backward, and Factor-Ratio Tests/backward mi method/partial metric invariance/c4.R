@@ -54,15 +54,15 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
@@ -88,15 +88,15 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
 
 
 # n=500 -------------------------------------------------------------------
@@ -135,15 +135,15 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
@@ -169,15 +169,15 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -216,15 +216,15 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
 
 
 #CI=.99
@@ -250,12 +250,12 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
+tyi_rate <- mean(tyi_err)
 
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyii_rate <- mean(tyii_err)
