@@ -35,13 +35,23 @@ gen_dta_v6 <- function(nobs, la1, phi1, la2, phi2, th2) {
 gen_dta_v12 <- function(nobs, la1, phi1, la2, phi2, th2) {
   pop_co_ma1 <- la1 %*% phi1 %*% t(la1) + th2
   pop_co_ma2 <- la2 %*% phi2 %*% t(la2) + th2
-  dta_1 <-
-    data.frame(rmvnorm(nobs, rep(0, nrow(pop_co_ma1)), sigma = pop_co_ma1, method =
-                         "chol"))
-  dta_2 <-
-    data.frame(rmvnorm(nobs, rep(0, nrow(pop_co_ma2)), sigma = pop_co_ma2, method =
-                         "chol"))
-  dta <- rbind(dta_1, dta_2) %>%
+  pop_mean1 <- tau1 + la1 %*% fac_mean1
+  pop_mean2 <- tau2 + la2 %*% fac_mean2
+  dta1 <-
+    data.frame(rmvnorm(
+      nobs,
+      mean = pop_mean1,
+      sigma = pop_co_ma1,
+      method = "chol"
+    ))#rep(mean,)mean要帶公式,tau+lamda*latent mean
+  dta2 <-
+    data.frame(rmvnorm(
+      nobs,
+      mean = pop_mean2,
+      sigma = pop_co_ma2,
+      method = "chol"
+    ))
+  dta <- rbind(dta1, dta2) %>%
     rename(
       v1 = X1,
       v2 = X2,
@@ -78,7 +88,7 @@ rmfun_papl <- function(md, dta) {
 #stopCluster(cl)
 #showConnections()
 
-####產出noninvariant的變項，使用平行分析####
+####產出noninvariant的變項，使用平行運算####
 non_var_papl <- function(md, dta) {
   mclapply(dta, function(x) {
     fit <- cfa(
@@ -125,10 +135,10 @@ det_non_pl <- function(non_var, non_con) {
 true_det_pl <- function(non_var, non_con) {
   a <- mclapply(non_var, function(x) {
     x %in% non_con
-  }, mc.cores = availableCores() - 5)
+  }, mc.cores = 1)
   b <- mclapply(a, function(x) {
     table(x)
-  }, mc.cores = availableCores() - 5)
+  }, mc.cores = 1)
   names(b) <- NULL
   c <- melt(b)
   c$L1 <- factor(c$L1, seq_along(b))
@@ -142,10 +152,10 @@ true_det_pl <- function(non_var, non_con) {
 fal_det_pl <- function(non_var, inv_con) {
   a <- mclapply(non_var, function(x) {
     x %in% inv_con
-  }, mc.cores = availableCores() - 5)
+  }, mc.cores = 1)
   b <- mclapply(a, function(x) {
     table(x)
-  }, mc.cores = availableCores() - 5)
+  }, mc.cores = 1)
   names(b) <- NULL
   c <- melt(b)
   c$L1 <- factor(c$L1, seq_along(b))
