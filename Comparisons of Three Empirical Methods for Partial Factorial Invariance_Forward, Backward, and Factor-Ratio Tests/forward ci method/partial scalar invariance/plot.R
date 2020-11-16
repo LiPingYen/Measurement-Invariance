@@ -51,7 +51,8 @@ p1 <- dta %>% ggplot(aes(x = condition,
              size = 2,
              fill = "red") +
   geom_line(aes(linetype = sample_size)) +
-  facet_grid(rows  = vars(confidence_intervel))
+  facet_grid(rows  = vars(confidence_intervel)) +
+  ylim(0, 1)
 ggplotly(p1)
 
 #type I error rate
@@ -62,7 +63,8 @@ p2 <- dta %>% ggplot(aes(x = condition,
              size = 2,
              fill = "red") +
   geom_line(aes(linetype = sample_size)) +
-  facet_grid(rows  = vars(confidence_intervel))
+  facet_grid(rows  = vars(confidence_intervel)) +
+  ylim(0, 1)
 ggplotly(p2)
 
 #type II error rate
@@ -73,5 +75,6 @@ p3 <- dta %>% ggplot(aes(x = condition,
              size = 2,
              fill = "red") +
   geom_line(aes(linetype = sample_size)) +
-  facet_grid(rows  = vars(confidence_intervel))
+  facet_grid(rows  = vars(confidence_intervel)) +
+  ylim(0, 1)
 ggplotly(p3)
