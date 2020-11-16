@@ -125,7 +125,7 @@ options(digits = 4)
 reps = 1000
 nobs = 250
 p_value = 0.05
-non_con <- c(".p2.",".p4.")#dl2,dl3,dl4,dl5,dl6
+non_con <- c(".p2.",".p4.")
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
