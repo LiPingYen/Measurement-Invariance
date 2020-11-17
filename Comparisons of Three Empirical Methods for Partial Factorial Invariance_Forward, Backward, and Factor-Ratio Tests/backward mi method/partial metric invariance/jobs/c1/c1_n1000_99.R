@@ -96,14 +96,6 @@ det_non <- function(det_list, non_con) {
   })
 }
 
-# model-level Type I error ------------------------------------------------
-
-
-det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.",".p5.",".p6.")),1,0)
-  })
-}
 
 # model-level Type I error (only for baseline model) ----------------------
 
@@ -114,6 +106,7 @@ det_tyi <- function(det_list) {
   })
 }
 
+
 # model-level Type II error -----------------------------------------------
 
 
@@ -123,18 +116,20 @@ det_tyii <- function(det_list, non_con) {
   })
 }
 
+
 ##baseline model
+options(digits = 4)
 
 #PMI
 
-# n=250 -------------------------------------------------------------------
+# n=1000 ------------------------------------------------------------------
 
 
-#CI=.95
+#CI=.99
 #generate population data
 reps = 1000
-nobs = 250
-p_value = 0.05
+nobs = 1000
+p_value = 0.01
 non_con <- NA
 
 #group1
@@ -158,82 +153,7 @@ fac1~c(0,NA)*1
 X1~tau*1
 '
 
-##small difference
-options(digits = 4)
-#PMI
-
-# n=250 -------------------------------------------------------------------
-
-
-#CI=.95
-#generate population data
-reps = 1000
-nobs = 250
-p_value = 0.05
-non_con <- c(".p2.",".p4.")
-
-#group1
-lambda1 <- matrix(rep(0.7, 6), nrow = 6)
-phi1 <- 1
-theta1 <- diag(rep(0.3, 6))
-tau1 <- matrix(rep(1, 6), nrow = 6)
-fac_mean1 = 0
-
-#group2
-lambda2 <- matrix(c(0.7, 0.5, 0.7, 0.5, 0.7, 0.7), nrow = 6)
-phi2 <- 1.3
-theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(rep(1, 6), nrow = 6)
-fac_mean2 = 0.2
-
-#test model
-mdconf <- '
-fac1=~0.7*X1+X2+X3+X4+X5+X6
-fac1~c(0,NA)*1
-X1~tau*1
-'
-
-
-dta <- gen_dta(
-  reps = reps,
-  nobs = nobs,
-  la1 = lambda1,
-  la2 = lambda2,
-  phi1 = phi1,
-  phi2 = phi2,
-  th1 = theta1,
-  th2 = theta2,
-  tau1 = tau1,
-  tau2 = tau2,
-  fac_mean1 = fac_mean1,
-  fac_mean2 = fac_mean2
-)
-
-fit <- cfa(
-  model = mdconf,
-  data = dta[[1]],
-  group = "group",
-  group.equal = c("loadings")
-)
-
-lavTestScore(fit, cumulative = TRUE, epc = TRUE)
-lavp <-
-  lavTestScore(fit, cumulative = TRUE)$cumulative %>% subset(!lhs == ".p8.") #移除tau1恆等的那列
-lavp_new <- lavp[1, ]
-
-fit1<-cfa(model = mdconf,
-          data = dta[[1]],
-          group = "group",
-          group.equal = c("loadings"),
-          group.partial ="fac1=~X4"
-          )
-lavTestScore(fit1, cumulative = TRUE)$cumulative
-
-ifelse(compare(non_v_list[[1]],NA,ignoreOrder=TRUE)$result,1,0)
-
-ifelse(any(non_v_list[[2]] %in% ".p2."),ifelse(any(non_v_list[[2]] %in% ".p4."),0,1),1)
-
-#整理好的test code
+#backward method using MI
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -253,12 +173,8 @@ non_v_list<-det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
-mean(non_all)
+pe_re_rate <- mean(non_all)
 
-#typeI error
+#type I error
 tyi_err <- det_tyi(det_list = non_v_list)
-mean(tyi_err)
-
-#type II error
-tyii_err <- det_tyii(det_list = non_v_list)
-mean(tyii_err)
+tyi_rate <- mean(tyi_err)

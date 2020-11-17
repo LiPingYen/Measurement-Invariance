@@ -89,7 +89,7 @@ det_non_v <- function(md, dta) {
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
-#non_con: non-invariant variable enter TRUE, invariant enter FALSE
+#non_con: non-invariant variable will be showed on list
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
     ifelse(compare(x, non_con,ignoreOrder=TRUE)$result, 1, 0)
