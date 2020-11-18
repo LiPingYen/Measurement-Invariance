@@ -59,26 +59,29 @@ det_non_v <- function(md, dta) {
       model = md,
       data = x,
       group = "group",
-      group.equal = c("loadings")
+      group.equal = c("loadings", "intercepts")
     )
-    lavp <- lavTestScore(fit, cumulative = TRUE)$cumulative %>% subset(!lhs == ".p8.") #移除tau1恆等的那列
+    lavp <-
+      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)#移除lam恆等的那列
     lavp <- lavp[1, ]
     fre_va <- vector()
     non_int_each <- vector()
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
-      X <- str_extract_all(lavp$lhs, "(\\d)+")[[1]]
-      fre_va[n] <- paste0("fac1=~X", X)
+      X <-
+        str_extract_all(lavp$lhs, "(\\d)+")[[1]] %>% as.numeric() %>% -14 %>% as.character()
+      fre_va[n] <- paste0("X", X, "~1")
       fit_i <-
         cfa(
-          model = md,
-          data = x,
+          model = mdconf,
+          data = dta[[2]],
           group = "group",
-          group.equal = c("loadings"),
+          group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
         )
-      lavp <- lavTestScore(fit_i, cumulative = TRUE)$cumulative[1,]
+      lavp <- lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)
+      lavp <- lavp[1, ]
       n = n + 1
     }
     non_int_each
@@ -92,7 +95,7 @@ det_non_v <- function(md, dta) {
 #non_con: non-invariant variable enter TRUE, invariant enter FALSE
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(compare(x, non_con,ignoreOrder=TRUE)$result, 1, 0)
+    ifelse(compare(x, non_con, ignoreOrder = TRUE)$result, 1, 0)
   })
 }
 
@@ -101,7 +104,7 @@ det_non <- function(det_list, non_con) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.",".p5.",".p6.")),1,0)
+    ifelse(any(x %in% c(".p17.", ".p19.", ".p20.")), 1, 0)
   })
 }
 
@@ -110,7 +113,7 @@ det_tyi <- function(det_list) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p2.",".p3.",".p4.",".p5.",".p6.")),1,0)
+    ifelse(any(x %in% c(".p16.", ".p17.", ".p18.", ".p19.", ".p20.")), 1, 0)
   })
 }
 
@@ -119,7 +122,7 @@ det_tyi <- function(det_list) {
 
 det_tyii <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% ".p2."),ifelse(any(x %in% ".p4."),0,1),1)
+    ifelse(any(x %in% ".p16."), ifelse(any(x %in% ".p18."), 0, 1), 1)
   })
 }
 
@@ -132,7 +135,7 @@ det_tyii <- function(det_list, non_con) {
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 100
 nobs = 250
 p_value = 0.05
 non_con <- NA
@@ -167,10 +170,10 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 100
 nobs = 250
-p_value = 0.05
-non_con <- c(".p2.",".p4.")
+p_value = 0.01
+non_con <- c(".p16.", ".p18.")
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
@@ -180,10 +183,10 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(c(0.7, 0.5, 0.7, 0.5, 0.7, 0.7), nrow = 6)
+lambda2 <- matrix(rep(0.7, 6), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(rep(1, 6), nrow = 6)
+tau2 <- matrix(c(1, 0.8, 1, 0.8, 1, 1), nrow = 6)
 fac_mean2 = 0.2
 
 #test model
@@ -211,27 +214,54 @@ dta <- gen_dta(
 
 fit <- cfa(
   model = mdconf,
-  data = dta[[1]],
+  data = dta[[2]],
   group = "group",
-  group.equal = c("loadings")
+  group.equal = c("loadings", "intercepts")
 )
 
-lavTestScore(fit, cumulative = TRUE, epc = TRUE)
 lavp <-
-  lavTestScore(fit, cumulative = TRUE)$cumulative %>% subset(!lhs == ".p8.") #移除tau1恆等的那列
+  lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)#移除lam恆等的那列
+lavp <- lavp[1, ]
+fre_va <- vector()
+non_int_each <- vector()
+n <- 1
+while (lavp[, 6] < p_value) {
+  non_int_each[n] <- lavp$lhs
+  X <-
+    str_extract_all(lavp$lhs, "(\\d)+")[[1]] %>% as.numeric() %>% -14 %>% as.character()
+  fre_va[n] <- paste0("X", X, "~1")
+  fit_i <-
+    cfa(
+      model = mdconf,
+      data = dta[[2]],
+      group = "group",
+      group.equal = c("loadings", "intercepts"),
+      group.partial = fre_va
+    )
+  lavp <- lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)
+  lavp <- lavp[1, ]
+  n = n + 1
+}
+non_int_each
+
+lavTestScore(fit, cumulative = TRUE, epc = TRUE)
+lavTestScore(fit, cumulative = TRUE)
+lavp <-
+  lavTestScore(fit, cumulative = TRUE)$cumulative %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8."))
 lavp_new <- lavp[1, ]
 
-fit1<-cfa(model = mdconf,
-          data = dta[[1]],
-          group = "group",
-          group.equal = c("loadings"),
-          group.partial ="fac1=~X4"
-          )
-lavTestScore(fit1, cumulative = TRUE)$cumulative
+fit1 <- cfa(
+  model = mdconf,
+  data = dta[[1]],
+  group = "group",
+  group.equal = c("loadings", "intercepts"),
+  group.partial = c("X2~1", "X4~1")
+)
+lavTestScore(fit1, cumulative = TRUE)$cumulative %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8."))
 
-ifelse(compare(non_v_list[[1]],NA,ignoreOrder=TRUE)$result,1,0)
+ifelse(compare(non_v_list[[1]], NA, ignoreOrder = TRUE)$result, 1, 0)
 
-ifelse(any(non_v_list[[2]] %in% ".p2."),ifelse(any(non_v_list[[2]] %in% ".p4."),0,1),1)
+ifelse(any(non_v_list[[2]] %in% ".p2."), ifelse(any(non_v_list[[2]] %in% ".p4."), 0, 1), 1)
 
 #整理好的test code
 dta <- gen_dta(
@@ -249,7 +279,7 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-non_v_list<-det_non_v(md = mdconf, dta = dta)
+non_v_list <- det_non_v(md = mdconf, dta = dta)
 
 #perfect recovery rate
 non_all <- det_non(det_list = non_v_list, non_con = non_con)

@@ -61,7 +61,8 @@ det_non_v <- function(md, dta) {
       group = "group",
       group.equal = c("loadings")
     )
-    lavp <- lavTestScore(fit, cumulative = TRUE)$cumulative %>% subset(!lhs == ".p8.") #移除tau1恆等的那列
+    lavp <-
+      lavTestScore(fit)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value) #移除tau1恆等的那列
     lavp <- lavp[1, ]
     fre_va <- vector()
     non_int_each <- vector()
@@ -78,7 +79,8 @@ det_non_v <- function(md, dta) {
           group.equal = c("loadings"),
           group.partial = fre_va
         )
-      lavp <- lavTestScore(fit_i, cumulative = TRUE)$cumulative[1,]
+      lavp <- lavTestScore(fit_i)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value)
+      lavp <- lavp[1, ]
       n = n + 1
     }
     non_int_each
@@ -167,7 +169,7 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 100
 nobs = 250
 p_value = 0.05
 non_con <- c(".p2.",".p4.")
