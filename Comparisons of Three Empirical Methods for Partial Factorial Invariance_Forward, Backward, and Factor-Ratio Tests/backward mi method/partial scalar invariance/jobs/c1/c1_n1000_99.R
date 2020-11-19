@@ -75,7 +75,7 @@ det_non_v <- function(md, dta) {
       fit_i <-
         cfa(
           model = mdconf,
-          data = dta[[2]],
+          data = x,
           group = "group",
           group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
