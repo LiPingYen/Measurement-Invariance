@@ -59,10 +59,10 @@ det_non_v <- function(md, dta) {
       model = md,
       data = x,
       group = "group",
-      group.equal = c("loadings")
+      group.equal = c("loadings","intercepts")
     )
     lavp <-
-      lavTestScore(fit)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value) #移除tau1恆等的那列
+      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value) #移除tau恆等的那列
     lavp <- lavp[1, ]
     fre_va <- vector()
     non_int_each <- vector()
@@ -76,11 +76,11 @@ det_non_v <- function(md, dta) {
           model = md,
           data = x,
           group = "group",
-          group.equal = c("loadings"),
+          group.equal = c("loadings","intercepts"),
           group.partial = fre_va
         )
       lavp <-
-        lavTestScore(fit_i)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value)
+        lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value)
       lavp <- lavp[1, ]
       n = n + 1
     }
