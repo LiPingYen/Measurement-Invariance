@@ -59,28 +59,28 @@ det_non_v <- function(md, dta) {
       model = md,
       data = x,
       group = "group",
-      group.equal = c("loadings")
+      group.equal = c("loadings", "intercepts")
     )
     lavp <-
-      lavTestScore(fit)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value) #移除tau1恆等的那列
+      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)#移除lam恆等的那列
     lavp <- lavp[1, ]
     fre_va <- vector()
     non_int_each <- vector()
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
-      X <- str_extract_all(lavp$lhs, "(\\d)+")[[1]]
-      fre_va[n] <- paste0("fac1=~X", X)
+      X <-
+        str_extract_all(lavp$lhs, "(\\d)+")[[1]] %>% as.numeric() %>% -14 %>% as.character()
+      fre_va[n] <- paste0("X", X, "~1")
       fit_i <-
         cfa(
-          model = md,
+          model = mdconf,
           data = x,
           group = "group",
-          group.equal = c("loadings"),
+          group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
         )
-      lavp <-
-        lavTestScore(fit_i)$uni %>% subset(!lhs == ".p8.") %>% arrange(p.value)
+      lavp <- lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.", ".p8.")) %>% arrange(p.value)
       lavp <- lavp[1, ]
       n = n + 1
     }
