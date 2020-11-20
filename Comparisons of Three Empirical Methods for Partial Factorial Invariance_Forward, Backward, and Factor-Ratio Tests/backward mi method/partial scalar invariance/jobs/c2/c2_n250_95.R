@@ -92,19 +92,20 @@ det_non_v <- function(md, dta) {
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
-#non_con: non-invariant variable will be showed on list
+#non_con: non-invariant variable enter TRUE, invariant enter FALSE
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(compare(x, non_con,ignoreOrder=TRUE)$result, 1, 0)
+    ifelse(compare(x, non_con, ignoreOrder = TRUE)$result, 1, 0)
   })
 }
+
 
 # model-level Type I error ------------------------------------------------
 
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.",".p5.",".p6.")),1,0)
+    ifelse(any(x %in% c(".p17.", ".p19.", ".p20.")), 1, 0)
   })
 }
 
@@ -114,7 +115,7 @@ det_tyi <- function(det_list) {
 
 det_tyii <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% ".p2."),ifelse(any(x %in% ".p4."),0,1),1)
+    ifelse(any(x %in% ".p16."), ifelse(any(x %in% ".p18."), 0, 1), 1)
   })
 }
 
