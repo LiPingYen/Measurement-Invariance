@@ -59,13 +59,14 @@ det_non_v <- function(md, dta) {
       model = md,
       data = x,
       group = "group",
-      group.equal = c("loadings","intercepts")
+      group.equal = c("loadings", "intercepts")
     )
     lavp <-
-      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value) #移除tau恆等的那列
-    lavp <- lavp[1, ]
+      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p15.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value) #移除tau恆等的那列
+    lavp <- lavp[1,]
     fre_va <- vector()
     non_int_each <- vector()
+    converge <- vector()
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
@@ -76,26 +77,41 @@ det_non_v <- function(md, dta) {
           model = md,
           data = x,
           group = "group",
-          group.equal = c("loadings","intercepts"),
+          group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
         )
+      converge[n] <- lavInspect(fit_i, what = "converged")
       lavp <-
-        lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value)
-      lavp <- lavp[1, ]
+        lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p15.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value)
+      lavp <- lavp[1,]
       n = n + 1
     }
-    non_int_each
+    conv <- ifelse(all(converge == TRUE), 1, 0)
+    list(non_int_each, converge, conv)
   }, mc.cores = 12)
 }
+
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[3]]
+    }), function(y) {
+      y
+    }))
+  }
 
 
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
-#non_con: non-invariant variable enter TRUE, invariant enter FALSE
+#non_con: non-invariant variable will be showed on list
 det_non <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(compare(x, non_con,ignoreOrder=TRUE)$result, 1, 0)
+    ifelse(compare(x, non_con, ignoreOrder = TRUE)$result, 1, 0)
   })
 }
 
@@ -105,7 +121,17 @@ det_non <- function(det_list, non_con) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p2.",".p3.",".p4.",".p5.",".p6.")),1,0)
+    ifelse(any(x %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
+  })
+}
+
+
+# model-level Type I error ------------------------------------------------
+
+
+det_tyi <- function(det_list) {
+  sapply(det_list, function(x) {
+    ifelse(any(x %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
   })
 }
 
@@ -115,7 +141,7 @@ det_tyi <- function(det_list) {
 
 det_tyii <- function(det_list, non_con) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% ".p2."),ifelse(any(x %in% ".p4."),0,1),1)
+    ifelse(any(x %in% ".p2."), ifelse(any(x %in% ".p4."), 0, 1), 1)
   })
 }
 
@@ -153,7 +179,6 @@ fac_mean2 = 0.2
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 #backward method using MI
@@ -181,3 +206,7 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
+convergence_rate

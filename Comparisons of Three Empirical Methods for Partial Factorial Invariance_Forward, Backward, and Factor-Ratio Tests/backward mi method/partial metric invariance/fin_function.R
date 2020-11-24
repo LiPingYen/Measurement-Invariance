@@ -59,13 +59,14 @@ det_non_v <- function(md, dta) {
       model = md,
       data = x,
       group = "group",
-      group.equal = c("loadings","intercepts")
+      group.equal = c("loadings", "intercepts")
     )
     lavp <-
-      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value) #移除tau恆等的那列
-    lavp <- lavp[1, ]
+      lavTestScore(fit)$uni %>% subset(!lhs %in% c(".p15.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value) #移除tau恆等的那列
+    lavp <- lavp[1,]
     fre_va <- vector()
     non_int_each <- vector()
+    converge <- vector()
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
@@ -76,17 +77,32 @@ det_non_v <- function(md, dta) {
           model = md,
           data = x,
           group = "group",
-          group.equal = c("loadings","intercepts"),
+          group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
         )
+      converge[n] <- lavInspect(fit_i, what = "converged")
       lavp <-
-        lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p8.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value)
-      lavp <- lavp[1, ]
+        lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p15.", ".p16.", ".p17.", ".p18.", ".p19.", ".p20.")) %>% arrange(p.value)
+      lavp <- lavp[1,]
       n = n + 1
     }
-    non_int_each
+    conv <- ifelse(all(converge == TRUE), 1, 0)
+    list(non_int_each, converge, conv)
   }, mc.cores = 12)
 }
+
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[3]]
+    }), function(y) {
+      y
+    }))
+  }
 
 
 # perfect recovery rate:completely detects non-invariant variable ---------
