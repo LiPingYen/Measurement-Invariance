@@ -209,4 +209,3 @@ tyi_rate <- mean(tyi_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate

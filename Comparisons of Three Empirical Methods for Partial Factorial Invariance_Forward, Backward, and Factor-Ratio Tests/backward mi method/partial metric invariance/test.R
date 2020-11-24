@@ -135,7 +135,7 @@ det_tyi <- function(det_list) {
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(any(x %in% ".p2."), ifelse(any(x %in% ".p4."), 0, 1), 1)
   })

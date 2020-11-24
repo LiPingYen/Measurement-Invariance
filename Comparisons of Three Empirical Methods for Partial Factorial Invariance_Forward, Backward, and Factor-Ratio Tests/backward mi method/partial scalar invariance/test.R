@@ -66,6 +66,7 @@ det_non_v <- function(md, dta) {
     lavp <- lavp[1, ]
     fre_va <- vector()
     non_int_each <- vector()
+    converge <- vector()
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
@@ -80,13 +81,27 @@ det_non_v <- function(md, dta) {
           group.equal = c("loadings", "intercepts"),
           group.partial = fre_va
         )
+      converge[n] <- lavInspect(fit_i, what = "converged")
       lavp <- lavTestScore(fit_i)$uni %>% subset(!lhs %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")) %>% arrange(p.value)
       lavp <- lavp[1, ]
       n = n + 1
     }
-    non_int_each
+    conv <- ifelse(all(converge == TRUE), 1, 0)
+    list(non_int_each, converge, conv)
   }, mc.cores = 12)
 }
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[3]]
+    }), function(y) {
+      y
+    }))
+  }
 
 
 # perfect recovery rate:completely detects non-invariant variable ---------
@@ -104,7 +119,7 @@ det_non <- function(det_list, non_con) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p17.", ".p19.", ".p20.")), 1, 0)
+    ifelse(any(x %in% c(".p15.",".p17.", ".p19.", ".p20.")), 1, 0)
   })
 }
 
@@ -113,14 +128,14 @@ det_tyi <- function(det_list) {
 
 det_tyi <- function(det_list) {
   sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p16.", ".p17.", ".p18.", ".p19.", ".p20.")), 1, 0)
+    ifelse(any(x %in% c(".p15.",".p16.", ".p17.", ".p18.", ".p19.", ".p20.")), 1, 0)
   })
 }
 
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(any(x %in% ".p16."), ifelse(any(x %in% ".p18."), 0, 1), 1)
   })
@@ -158,7 +173,6 @@ fac_mean2 = 0.2
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 ##small difference
@@ -193,7 +207,6 @@ fac_mean2 = 0.2
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 
@@ -293,3 +306,7 @@ mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
+convergence_rate

@@ -65,7 +65,6 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate
 
 
 #CI=.99
@@ -103,7 +102,6 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate
 
 
 # n=500 -------------------------------------------------------------------
@@ -151,6 +149,9 @@ tyi_rate <- mean(tyi_err)
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
 
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
+
 
 #CI=.99
 p_value = 0.01
@@ -187,7 +188,6 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate
 
 
 # n=1000 ------------------------------------------------------------------
@@ -237,7 +237,6 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate
 
 
 #CI=.99
@@ -275,4 +274,3 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate

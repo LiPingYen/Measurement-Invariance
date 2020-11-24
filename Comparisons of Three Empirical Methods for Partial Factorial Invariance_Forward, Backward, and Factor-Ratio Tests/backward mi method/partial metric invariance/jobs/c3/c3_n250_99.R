@@ -116,16 +116,6 @@ det_non <- function(det_list, non_con) {
 }
 
 
-# model-level Type I error (only for baseline model) ----------------------
-
-
-det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
-  })
-}
-
-
 # model-level Type I error ------------------------------------------------
 
 
@@ -139,7 +129,7 @@ det_tyi <- function(det_list) {
 # model-level Type II error -----------------------------------------------
 
 
-det_tyii <- function(det_list, non_con) {
+det_tyii <- function(det_list) {
   sapply(det_list, function(x) {
     ifelse(any(x %in% ".p2."), ifelse(any(x %in% ".p4."), 0, 1), 1)
   })
@@ -214,4 +204,3 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = non_v_list)
-convergence_rate

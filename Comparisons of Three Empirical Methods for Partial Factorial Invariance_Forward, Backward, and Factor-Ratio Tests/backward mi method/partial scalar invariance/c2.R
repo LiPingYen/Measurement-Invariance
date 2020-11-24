@@ -31,7 +31,6 @@ fac_mean2 = 0.2
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 #backward method using MI
@@ -63,6 +62,9 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
 
 
 #CI=.99
@@ -97,6 +99,9 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
 
 
 # n=500 -------------------------------------------------------------------
@@ -112,7 +117,6 @@ p_value = 0.05
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 #backward method using MI
@@ -144,6 +148,9 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
 
 
 #CI=.99
@@ -178,6 +185,9 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -193,7 +203,6 @@ p_value = 0.05
 mdconf <- '
 fac1=~0.7*X1+X2+X3+X4+X5+X6
 fac1~c(0,NA)*1
-X1~tau*1
 '
 
 #backward method using MI
@@ -225,6 +234,9 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
 
 
 #CI=.99
@@ -259,3 +271,6 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = non_v_list)
