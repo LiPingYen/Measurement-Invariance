@@ -126,16 +126,6 @@ det_tyi <- function(det_list) {
 }
 
 
-# model-level Type I error ------------------------------------------------
-
-
-det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
-  })
-}
-
-
 # model-level Type II error -----------------------------------------------
 
 
