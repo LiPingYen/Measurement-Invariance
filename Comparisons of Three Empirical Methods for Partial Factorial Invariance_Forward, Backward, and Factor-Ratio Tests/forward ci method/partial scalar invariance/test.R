@@ -58,8 +58,10 @@ gen_tau <- function(data, model) {
                model = model,
                group = "group")
     dtp <- parameterEstimates(fit)[41:45, 10]
+    converge <- lavInspect(fit_i, what = "converged")
     data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
                diff_tau_pvalue = dtp)
+    list()
   }, mc.cores = 12)
 }
 
@@ -122,7 +124,7 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 100
 nobs = 1000
 p_value = 0.05
 non_con <- c(FALSE, FALSE, FALSE, FALSE, FALSE)#dt2,dt3,dt4,dt5,dt6
