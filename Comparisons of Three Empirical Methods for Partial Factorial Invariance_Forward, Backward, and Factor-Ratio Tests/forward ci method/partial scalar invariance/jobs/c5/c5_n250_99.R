@@ -49,7 +49,7 @@ gen_dta <-
   }
 
 
-# create difference of lambda dataframe from result of cfa ------------------------------
+# create difference of tau dataframe from result of cfa ------------------------------
 
 
 gen_tau <- function(data, model) {
@@ -58,8 +58,10 @@ gen_tau <- function(data, model) {
                model = model,
                group = "group")
     dtp <- parameterEstimates(fit)[41:45, 10]
-    data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
-               diff_tau_pvalue = dtp)
+    converge <- lavInspect(fit, what = "converged")
+    z <- data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
+                    diff_tau_pvalue = dtp)
+    list(z, converge)
   }, mc.cores = 12)
 }
 
@@ -68,8 +70,10 @@ gen_tau <- function(data, model) {
 
 
 check_non <- function(data, p_value) {
-  em_list <- vector(length = reps, mode = "list")
-  mclapply(data, function(x) {
+  dif_lam_p <- lapply(data, function(x) {
+    x[[1]]
+  })
+  mclapply(dif_lam_p, function(x) {
     c(x[1, 2] < p_value,
       x[2, 2] < p_value,
       x[3, 2] < p_value,
@@ -77,6 +81,19 @@ check_non <- function(data, p_value) {
       x[5, 2] < p_value)
   }, mc.cores = 1)
 }
+
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[2]]
+    }), function(y) {
+      y
+    }))
+  }
 
 # perfect recovery rate:completely detects non-invariant variable ---------
 
@@ -154,6 +171,9 @@ dt6:=t61-t62
 '
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -169,9 +189,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-tau_list <- gen_tau(data = dta, model = mdconf)
+lam_list <- gen_lam(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = tau_list, p_value = p_value)
+non_v_list <- check_non(data = lam_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -184,3 +204,6 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)

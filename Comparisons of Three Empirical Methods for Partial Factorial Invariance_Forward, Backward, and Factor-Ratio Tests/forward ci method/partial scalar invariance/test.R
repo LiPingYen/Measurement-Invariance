@@ -58,10 +58,10 @@ gen_tau <- function(data, model) {
                model = model,
                group = "group")
     dtp <- parameterEstimates(fit)[41:45, 10]
-    converge <- lavInspect(fit_i, what = "converged")
-    data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
-               diff_tau_pvalue = dtp)
-    list()
+    converge <- lavInspect(fit, what = "converged")
+    z <- data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
+                    diff_tau_pvalue = dtp)
+    list(z, converge)
   }, mc.cores = 12)
 }
 
@@ -70,8 +70,10 @@ gen_tau <- function(data, model) {
 
 
 check_non <- function(data, p_value) {
-  em_list <- vector(length = reps, mode = "list")
-  mclapply(data, function(x) {
+  dif_lam_p <- lapply(data, function(x) {
+    x[[1]]
+  })
+  mclapply(dif_lam_p, function(x) {
     c(x[1, 2] < p_value,
       x[2, 2] < p_value,
       x[3, 2] < p_value,
@@ -79,6 +81,19 @@ check_non <- function(data, p_value) {
       x[5, 2] < p_value)
   }, mc.cores = 1)
 }
+
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[2]]
+    }), function(y) {
+      y
+    }))
+  }
 
 
 # perfect recovery rate:completely detects non-invariant variable ---------

@@ -58,8 +58,10 @@ gen_lam <- function(data, model) {
                model = model,
                group = "group")
     dlp <- parameterEstimates(fit)[41:45, 10]
-    data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
-               diff_lam_pvalue = dlp)
+    converge <- lavInspect(fit, what = "converged")
+    z <- data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
+                    diff_lam_pvalue = dlp)
+    list(z, converge)
   }, mc.cores = 12)
 }
 
@@ -68,15 +70,30 @@ gen_lam <- function(data, model) {
 
 
 check_non <- function(data, p_value) {
-  em_list <- vector(length = reps, mode = "list")
-  mclapply(data, function(x) {
-    c(x[1, 2] < p_value,
-      x[2, 2] < p_value,
-      x[3, 2] < p_value,
-      x[4, 2] < p_value,
-      x[5, 2] < p_value)
+  dif_lam_p <- lapply(data, function(x) {
+    x[[1]]
+  })
+  mclapply(dif_lam_p, function(y) {
+    c(y[1, 2] < p_value,
+      y[2, 2] < p_value,
+      y[3, 2] < p_value,
+      y[4, 2] < p_value,
+      y[5, 2] < p_value)
   }, mc.cores = 1)
 }
+
+
+#convergence rate
+
+
+conv_rate <-
+  function(non_v_li) {
+    mean(sapply(lapply(non_v_li, function(x) {
+      x[[2]]
+    }), function(y) {
+      y
+    }))
+  }
 
 # perfect recovery rate:completely detects non-invariant variable ---------
 
@@ -148,6 +165,9 @@ dl6:=l61-l62
 '
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -178,3 +198,6 @@ tyi_rate <- mean(tyi_err)
 #type II error
 tyii_err <- det_tyii(det_list = non_v_list)
 tyii_rate <- mean(tyii_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)

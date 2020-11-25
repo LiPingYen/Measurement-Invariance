@@ -40,6 +40,9 @@ dl6:=l61-l62
 '
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -66,12 +69,18 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)
 
 
 #CI=.99
 p_value = 0.01
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -98,6 +107,9 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)
 
 
 # n=500 -------------------------------------------------------------------
@@ -122,6 +134,9 @@ dl6:=l61-l62
 '
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -148,12 +163,18 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)
 
 
 #CI=.99
 p_value = 0.01
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -180,6 +201,9 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -204,6 +228,9 @@ dl6:=l61-l62
 '
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -230,12 +257,18 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)
 
 
 #CI=.99
 p_value = 0.01
 
 #forward method using CI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -262,3 +295,6 @@ pe_re_rate <- mean(non_all)
 #type I error
 tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
+
+#convergence rate
+convergence_rate <-conv_rate(non_v_li = lam_list)

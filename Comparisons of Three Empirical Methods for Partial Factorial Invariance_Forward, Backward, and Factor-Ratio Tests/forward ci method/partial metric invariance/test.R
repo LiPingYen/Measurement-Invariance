@@ -49,18 +49,18 @@ gen_dta <-
   }
 
 
-# create difference of tau dataframe from result of cfa ------------------------------
+# create difference of lambda dataframe from result of cfa ------------------------------
 
 
-gen_tau <- function(data, model) {
+gen_lam <- function(data, model) {
   mclapply(data, function(x) {
     fit <- cfa(data = x,
                model = model,
                group = "group")
-    dtp <- parameterEstimates(fit)[41:45, 10]
+    dlp <- parameterEstimates(fit)[41:45, 10]
     converge <- lavInspect(fit, what = "converged")
-    z <- data.frame(v = c("dt2", "dt3", "dt4", "dt5", "dt6"),
-                    diff_tau_pvalue = dtp)
+    z <- data.frame(v = c("dl2", "dl3", "dl4", "dl5", "dl6"),
+                    diff_lam_pvalue = dlp)
     list(z, converge)
   }, mc.cores = 12)
 }
@@ -73,12 +73,12 @@ check_non <- function(data, p_value) {
   dif_lam_p <- lapply(data, function(x) {
     x[[1]]
   })
-  mclapply(dif_lam_p, function(x) {
-    c(x[1, 2] < p_value,
-      x[2, 2] < p_value,
-      x[3, 2] < p_value,
-      x[4, 2] < p_value,
-      x[5, 2] < p_value)
+  mclapply(dif_lam_p, function(y) {
+    c(y[1, 2] < p_value,
+      y[2, 2] < p_value,
+      y[3, 2] < p_value,
+      y[4, 2] < p_value,
+      y[5, 2] < p_value)
   }, mc.cores = 1)
 }
 
@@ -94,6 +94,7 @@ conv_rate <-
       y
     }))
   }
+
 
 # perfect recovery rate:completely detects non-invariant variable ---------
 
@@ -124,20 +125,20 @@ det_tyii <- function(det_list) {
 }
 
 
-##nonuniform difference model
+##small difference model
 options(digits = 4)
 
-#PSI
+#PMI
 
-# n=500 -------------------------------------------------------------------
+# n=1000 -------------------------------------------------------------------
 
 
 #CI=.95
 #generate population data
-reps = 1000
-nobs = 500
+reps = 100
+nobs = 10000
 p_value = 0.05
-non_con <- c(TRUE, FALSE, TRUE, FALSE, FALSE)#dt2,dt3,dt4,dt5,dt6
+non_con <- c(TRUE, FALSE, TRUE, FALSE, FALSE)#dl2,dl3,dl4,dl5,dl6
 
 #group1
 lambda1 <- matrix(rep(0.7, 6), nrow = 6)
@@ -147,33 +148,25 @@ tau1 <- matrix(rep(1, 6), nrow = 6)
 fac_mean1 = 0
 
 #group2
-lambda2 <- matrix(rep(0.7, 6), nrow = 6)
+lambda2 <- matrix(c(0.7, 0.5, 0.7, 0.5, 0.7, 0.7), nrow = 6)
 phi2 <- 1.3
 theta2 <- diag(rep(0.3, 6))
-tau2 <- matrix(c(1, 0.7, 1, 1.3, 1, 1), nrow = 6)
+tau2 <- matrix(rep(1, 6), nrow = 6)
 fac_mean2 = 0.2
 
 #test model
 mdconf <- '
-fac1=~0.7*X1+lm2*X2+lm3*X3+lm4*X4+lm5*X5+lm6*X6
+fac1=~0.7*X1+c(l21,l22)*X2+c(l31,l32)*X3+c(l41,l42)*X4+c(l51,l52)*X5+c(l61,l62)*X6
 fac1~c(0,NA)*1
 X1~tau*1
-X2~c(t21,t22)*1
-X3~c(t31,t32)*1
-X4~c(t41,t42)*1
-X5~c(t51,t52)*1
-X6~c(t61,t62)*1
-dt2:=t21-t22
-dt3:=t31-t32
-dt4:=t41-t42
-dt5:=t51-t52
-dt6:=t61-t62
+dl2:=l21-l22
+dl3:=l31-l32
+dl4:=l41-l42
+dl5:=l51-l52
+dl6:=l61-l62
 '
 
 #forward method using CI
-seed<-sample(1:100000,1)
-set.seed(seed)
-
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -191,6 +184,10 @@ dta <- gen_dta(
 
 lam_list <- gen_lam(data = dta, model = mdconf)
 
+lapply(lam_list, function(x) {
+  x[[2]]
+})
+
 non_v_list <- check_non(data = lam_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
@@ -207,3 +204,4 @@ tyii_rate <- mean(tyii_err)
 
 #convergence rate
 convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate
