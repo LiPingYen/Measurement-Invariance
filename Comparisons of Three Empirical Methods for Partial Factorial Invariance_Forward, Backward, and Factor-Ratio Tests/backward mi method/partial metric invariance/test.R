@@ -107,39 +107,63 @@ conv_rate <-
 # perfect recovery rate:completely detects non-invariant variable ---------
 
 
-#non_con: non-invariant variable enter TRUE, invariant enter FALSE
+#non_con: non-invariant variable will be showed on list
 det_non <- function(det_list, non_con) {
-  sapply(det_list, function(x) {
-    ifelse(compare(x, non_con, ignoreOrder = TRUE)$result, 1, 0)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(compare(z, non_con, ignoreOrder = TRUE)$result, 1, 0)
   })
 }
+
 
 # model-level Type I error ------------------------------------------------
 
 
 det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
   })
 }
+
 
 # model-level Type I error (only for baseline model) ----------------------
 
 
 det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
   })
 }
+
 
 # model-level Type II error -----------------------------------------------
 
 
 det_tyii <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% ".p2."), ifelse(any(x %in% ".p4."), 0, 1), 1)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% ".p2."), ifelse(any(z %in% ".p4."), 0, 1), 1)
   })
 }
+
 
 ##baseline model
 
@@ -184,7 +208,7 @@ options(digits = 4)
 
 #CI=.95
 #generate population data
-reps = 1000
+reps = 100
 nobs = 250
 p_value = 0.05
 non_con <- c(".p2.", ".p4.")
@@ -253,6 +277,9 @@ ifelse(compare(non_v_list[[1]], NA, ignoreOrder = TRUE)$result, 1, 0)
 ifelse(any(non_v_list[[2]] %in% ".p2."), ifelse(any(non_v_list[[2]] %in% ".p4."), 0, 1), 1)
 
 #整理好的test code
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,

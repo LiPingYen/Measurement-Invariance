@@ -110,18 +110,13 @@ conv_rate <-
 
 #non_con: non-invariant variable will be showed on list
 det_non <- function(det_list, non_con) {
-  sapply(det_list, function(x) {
-    ifelse(compare(x, non_con, ignoreOrder = TRUE)$result, 1, 0)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
   })
-}
-
-
-# model-level Type I error (only for baseline model) ----------------------
-
-
-det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
+  sapply(non_list, function(z) {
+    ifelse(compare(z, non_con, ignoreOrder = TRUE)$result, 1, 0)
   })
 }
 
@@ -130,8 +125,28 @@ det_tyi <- function(det_list) {
 
 
 det_tyi <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% c(".p3.", ".p5.", ".p6.")), 1, 0)
+  })
+}
+
+
+# model-level Type I error (only for baseline model) ----------------------
+
+
+det_tyi <- function(det_list) {
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% c(".p2.", ".p3.", ".p4.", ".p5.", ".p6.")), 1, 0)
   })
 }
 
@@ -140,7 +155,12 @@ det_tyi <- function(det_list) {
 
 
 det_tyii <- function(det_list) {
-  sapply(det_list, function(x) {
-    ifelse(any(x %in% ".p2."), ifelse(any(x %in% ".p4."), 0, 1), 1)
+  non_list<-sapply(lapply(det_list, function(x) {
+    x[[1]]
+  }), function(y) {
+    y
+  })
+  sapply(non_list, function(z) {
+    ifelse(any(z %in% ".p2."), ifelse(any(z %in% ".p4."), 0, 1), 1)
   })
 }

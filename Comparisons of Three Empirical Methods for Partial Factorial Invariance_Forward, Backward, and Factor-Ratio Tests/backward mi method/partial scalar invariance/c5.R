@@ -34,6 +34,9 @@ fac1~c(0,NA)*1
 '
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -71,6 +74,9 @@ convergence_rate <-conv_rate(non_v_li = non_v_list)
 p_value = 0.01
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -120,6 +126,9 @@ fac1~c(0,NA)*1
 '
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -157,6 +166,9 @@ convergence_rate <-conv_rate(non_v_li = non_v_list)
 p_value = 0.01
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -206,6 +218,9 @@ fac1~c(0,NA)*1
 '
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
@@ -243,6 +258,9 @@ convergence_rate <-conv_rate(non_v_li = non_v_list)
 p_value = 0.01
 
 #backward method using MI
+seed<-sample(1:100000,1)
+set.seed(seed)
+
 dta <- gen_dta(
   reps = reps,
   nobs = nobs,
