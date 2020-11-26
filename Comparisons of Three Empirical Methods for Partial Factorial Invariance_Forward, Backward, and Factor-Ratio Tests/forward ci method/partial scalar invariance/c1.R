@@ -63,9 +63,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -76,7 +76,7 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
 
 
 #CI=.99
@@ -101,9 +101,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_tau(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -114,7 +114,7 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
 
 
 # n=500 -------------------------------------------------------------------
@@ -162,9 +162,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -175,7 +175,7 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
 
 
 #CI=.99
@@ -200,9 +200,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -213,7 +213,7 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
 
 
 # n=1000 ------------------------------------------------------------------
@@ -261,9 +261,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -274,7 +274,7 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
 
 
 #CI=.99
@@ -299,9 +299,9 @@ dta <- gen_dta(
   fac_mean2 = fac_mean2
 )
 
-lam_list <- gen_lam(data = dta, model = mdconf)
+tau_list <- gen_tau(data = dta, model = mdconf)
 
-non_v_list <- check_non(data = lam_list, p_value = p_value)
+non_v_list <- check_non(data = tau_list, p_value = p_value)
 
 #check if the variable is non-invariant or not
 non_all <- det_non(det_list = non_v_list, non_con = non_con)
@@ -312,4 +312,4 @@ tyi_err <- det_tyi(det_list = non_v_list)
 tyi_rate <- mean(tyi_err)
 
 #convergence rate
-convergence_rate <-conv_rate(non_v_li = lam_list)
+convergence_rate <-conv_rate(non_v_li = tau_list)
