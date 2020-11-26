@@ -70,12 +70,12 @@ det_non_v <- function(md, dta) {
     n <- 1
     while (lavp[, 6] < p_value) {
       non_int_each[n] <- lavp$lhs
-      X <-
+      Y <-
         str_extract_all(lavp$lhs, "(\\d)+")[[1]] %>% as.numeric() %>% -14 %>% as.character()
       fre_va[n] <- paste0("X", Y, "~1")
       fit_i <-
         cfa(
-          model = mdconf,
+          model = md,
           data = x,
           group = "group",
           group.equal = c("loadings", "intercepts"),
