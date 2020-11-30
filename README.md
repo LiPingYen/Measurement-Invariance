@@ -9,6 +9,8 @@ R code for conducting simulation and analysis about measurement invariance
   
   Next, let's talk about condition. Firstly, the all_condition_info R script includes the brief introduction of each simulation condition from generating dataset to conducting CFA.
   
+  The code conducting simulation is old and worse than the Eunju Jung & Myeongsun Yoon (2016) one. Please use the latest function and code.
+  
 ###  Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests
 
 ## Reference
