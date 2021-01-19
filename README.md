@@ -11,9 +11,13 @@ R code for conducting simulation and analysis about measurement invariance
   
   The code conducting simulation is old and worse than the Eunju Jung & Myeongsun Yoon (2016) one. Please use the latest function and code.
   
-###  Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests
+### Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests
+
+### Permutation Randomization Methods for Testing Measurement Equivalence and Detecting Differential Item Functioning in Multiple-Group Confirmatory Factor Analysis
 
 ## Reference
 1. Myeongsun Yoon & Roger E. Millsap (2007) Detecting Violations of Factorial Invariance Using Data-Based Specification Searches: A Monte Carlo Study, Structural Equation Modeling: A Multidisciplinary Journal, 14:3, 435-463, DOI: [10.1080/10705510701301677](https://www.tandfonline.com/doi/full/10.1080/10705510701301677)
 
 2. Eunju Jung & Myeongsun Yoon (2016) Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests, Structural Equation Modeling: A Multidisciplinary Journal, 23:4, 567-584, DOI: [10.1080/10705511.2015.1138092](https://www.tandfonline.com/doi/full/10.1080/10705511.2015.1138092)
+
+3. Jorgensen, T. D., Kite, B. A., Chen, P. Y., & Short, S. D. (2018). Permutation randomization methods for testing measurement equivalence and detecting differential item functioning in multiple-group confirmatory factor analysis. Psychological methods, 23(4), 708. DOI:[https://doi.org/10.1037/met0000152](https://psycnet.apa.org/doiLanding?doi=10.1037%2Fmet0000152)
