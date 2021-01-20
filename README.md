@@ -25,4 +25,4 @@ The simulation process and condition can be find in the literature mentioned in 
 
 2. Eunju Jung & Myeongsun Yoon (2016) Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests, Structural Equation Modeling: A Multidisciplinary Journal, 23:4, 567-584, DOI: [10.1080/10705511.2015.1138092](https://www.tandfonline.com/doi/full/10.1080/10705511.2015.1138092)
 
-3. Jorgensen, T. D., Kite, B. A., Chen, P. Y., & Short, S. D. (2018). Permutation randomization methods for testing measurement equivalence and detecting differential item functioning in multiple-group confirmatory factor analysis. Psychological methods, 23(4), 708. DOI:[https://doi.org/10.1037/met0000152](https://psycnet.apa.org/doiLanding?doi=10.1037%2Fmet0000152)
+3. Jorgensen, T. D., Kite, B. A., Chen, P. Y., & Short, S. D. (2018). Permutation randomization methods for testing measurement equivalence and detecting differential item functioning in multiple-group confirmatory factor analysis. Psychological methods, 23(4), 708. DOI: [https://doi.org/10.1037/met0000152](https://psycnet.apa.org/doiLanding?doi=10.1037%2Fmet0000152)
