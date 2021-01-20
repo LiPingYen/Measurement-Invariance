@@ -3,15 +3,20 @@ R code for conducting simulation and analysis about measurement invariance
 
 ## Repositories content
 ### Detecting Violations of Factorial Invariance Using Data-Based Specification Searches A Monte Carlo Study
-  In this folder, you can find the simulation process conducted by R. Due to to the different software which the author conducted the simulation, you have to read the procedure of the simulation from creating sample to analysis firstly.
+
+In this folder, you can find the simulation process conducted by R. Due to to the different software which the author conducted the simulation, you have to read the procedure of the simulation from creating sample to analysis firstly.
   
-  The R script named raw_function contains original function for generating data and analysis including loop function, apply function and function with parallel computing. fin_funtion R script includes the final version of function for the project.
+The R script named raw_function contains original function for generating data and analysis including loop function, apply function and function with parallel computing. fin_funtion R script includes the final version of function for the project.
   
-  Next, let's talk about condition. Firstly, the all_condition_info R script includes the brief introduction of each simulation condition from generating dataset to conducting CFA.
+Next, let's talk about condition. Firstly, the all_condition_info R script includes the brief introduction of each simulation condition from generating dataset to conducting CFA.
   
-  The code conducting simulation is old and worse than the Eunju Jung & Myeongsun Yoon (2016) one. Please use the latest function and code.
+The code conducting simulation is old and worse than the Eunju Jung & Myeongsun Yoon (2016) one. Please use the latest function and code.
   
 ### Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests
+
+The folder includes the codes for conducting backward method and forward method to test partial metric and partial scalar measurement invariance.
+
+The simulation process and condition can be find in the literature mentioned in the reference part.
 
 ### Permutation Randomization Methods for Testing Measurement Equivalence and Detecting Differential Item Functioning in Multiple-Group Confirmatory Factor Analysis
 
