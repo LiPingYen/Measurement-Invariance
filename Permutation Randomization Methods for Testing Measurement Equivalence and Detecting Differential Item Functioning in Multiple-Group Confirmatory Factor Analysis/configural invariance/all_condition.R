@@ -129,8 +129,11 @@ tra_rej_rate<-function(data){
   chi<-mean(sapply(data,function(x){
     ifelse(x[1]>=0.05,0,1)
   }))
-  cfi<-mean(sapply(data,function(x){
+  cfi_95<-mean(sapply(data,function(x){
     ifelse(x[2]>=0.95,0,1)
+  }))
+  cfi_90<-mean(sapply(data,function(x){
+    ifelse(x[2]>=0.90,0,1)
   }))
   mfi<-mean(sapply(data,function(x){
     ifelse(x[3]>=0.9,0,1)
@@ -141,7 +144,7 @@ tra_rej_rate<-function(data){
   srmr<-mean(sapply(data,function(x){
     ifelse(x[5]>=0.08,1,0)
   }))
-  data.frame(chi,cfi,mfi,rmsea,srmr, row.names = "reject_rate")
+  data.frame(chi,cfi_95,cfi_90,mfi,rmsea,srmr, row.names = "reject_rate")
 }
 
 #test configural invariance
