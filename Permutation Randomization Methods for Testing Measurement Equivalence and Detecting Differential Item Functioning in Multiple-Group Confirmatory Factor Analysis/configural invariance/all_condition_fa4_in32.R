@@ -1,3 +1,6 @@
+#configural invariance
+#indicator=32, factor= 4
+
 library(semTools)
 library(lavaan)
 library(mvtnorm)
