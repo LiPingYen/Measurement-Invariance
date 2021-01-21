@@ -106,7 +106,7 @@ per_afi <-
 
 #omnibus reject H0 rate (permutation) -----------------------------------------------------
 
-per_rej_rate <- function(data, pvalue) {
+prr <- function(data, pvalue) {
   chi <- mean(sapply(data, function(x) {
     ifelse(x@AFI.pval["chisq"] >= pvalue, 0, 1)
   }))
@@ -128,7 +128,7 @@ per_rej_rate <- function(data, pvalue) {
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-tra_rej_rate <- function(data) {
+trr <- function(data) {
   chi <- mean(sapply(data, function(x) {
     ifelse(x[1] >= 0.05, 0, 1)
   }))
@@ -136,30 +136,34 @@ tra_rej_rate <- function(data) {
     ifelse(x[2] >= 0.95, 0, 1)
   }))
   cfi_90 <- mean(sapply(data, function(x) {
-    ifelse(x[2] >= 0.90, 0, 1)
+    ifelse(x[2] >= 0.9, 0, 1)
   }))
   mfi <- mean(sapply(data, function(x) {
     ifelse(x[3] >= 0.9, 0, 1)
   }))
-  rmsea <- mean(sapply(data, function(x) {
-    ifelse(x[4] >= 0.06, 1, 0)
+  rmsea_05 <- mean(sapply(data, function(x) {
+    ifelse(x[4] >= 0.05, 1, 0)
+  }))
+  rmsea_08 <- mean(sapply(data, function(x) {
+    ifelse(x[4] >= 0.08, 1, 0)
   }))
   srmr <- mean(sapply(data, function(x) {
     ifelse(x[5] >= 0.08, 1, 0)
   }))
-  data.frame(chi, cfi_95, cfi_90, mfi, rmsea, srmr, row.names = "reject_rate")
+  data.frame(chi, cfi_95, cfi_90, mfi, rmsea_05, rmsea_08, srmr, row.names = "reject_rate")
 }
 
 #test configural invariance
 #indicator=16, factor= 2
 #parameter setting
-reps = 100
+#paper use reps = 2000 and npermu = 200
+reps = 10
 nobs = 1600
 pvalue = 0.05
 n_factor = 2
 n_indicator = 16
 seed <- sample(1:100000, 1)
-npermu <- 50
+npermu <- 10
 myAFIs_tra <- c("pvalue", "cfi", "mfi", "rmsea", "srmr")
 myAFIs_per <- c("chisq", "cfi", "mfi", "rmsea", "srmr")
 moreAFIs_per <- NULL # c("gammaHat","gammaHat.scaled")
@@ -350,8 +354,8 @@ per_afi_list<-per_afi(
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-trr<-tra_rej_rate(data = tra_afi_list)
+tra_rej_rate<-trr(data = tra_afi_list)
 
 # omnibus reject H0 rate (permutation) -----------------------------------
 
-prr<-per_rej_rate(data = per_afi_list, pvalue = pvalue)
+per_rej_rate<-prr(data = per_afi_list, pvalue = pvalue)

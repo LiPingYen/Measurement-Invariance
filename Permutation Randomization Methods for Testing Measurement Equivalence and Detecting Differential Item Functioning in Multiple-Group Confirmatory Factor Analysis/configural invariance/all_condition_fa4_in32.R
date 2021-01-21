@@ -156,13 +156,14 @@ trr <- function(data) {
 #test configural invariance
 #indicator=32, factor= 4
 #parameter setting
-reps = 1000
+#paper use reps = 2000 and npermu = 200
+reps = 10
 nobs = 100
 pvalue = 0.05
 n_factor = 4
 n_indicator = 32
 seed <- sample(1:100000, 1)
-npermu <- 50
+npermu <- 10
 myAFIs_tra <- c("pvalue", "cfi", "mfi", "rmsea", "srmr")
 myAFIs_per <- c("chisq", "cfi", "mfi", "rmsea", "srmr")
 moreAFIs_per <- NULL # c("gammaHat","gammaHat.scaled")
@@ -415,8 +416,8 @@ per_afi_list<-per_afi(
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-trr<-tra_rej_rate(data = tra_afi_list)
+tra_rej_rate<-trr(data = tra_afi_list)
 
 # omnibus reject H0 rate (permutation) -----------------------------------
 
-prr<-per_rej_rate(data = per_afi_list, pvalue = pvalue)
+per_rej_rate<-prr(data = per_afi_list, pvalue = pvalue)
