@@ -14,7 +14,7 @@ The code conducting simulation is old and worse than the Eunju Jung & Myeongsun 
   
 ### Comparisons of Three Empirical Methods for Partial Factorial Invariance: Forward, Backward, and Factor-Ratio Tests
 
-The folder includes the codes for conducting backward method and forward method to test partial metric and partial scalar measurement invariance.
+The folder includes the code for conducting backward method and forward method to test partial metric and partial scalar measurement invariance.
 
 The simulation process and condition can be find in the literature mentioned in the reference part.
 
