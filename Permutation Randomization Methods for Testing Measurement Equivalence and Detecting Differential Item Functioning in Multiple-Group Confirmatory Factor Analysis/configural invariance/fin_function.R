@@ -104,7 +104,7 @@ per_afi <-
 
 #omnibus reject H0 rate (permutation) -----------------------------------------------------
 
-per_rej_rate<-function(data,pvalue){
+prr<-function(data,pvalue){
   chi<-mean(sapply(data,function(x){
     ifelse(x@AFI.pval["chisq"]>=pvalue,0,1)
   }))
@@ -126,7 +126,7 @@ per_rej_rate<-function(data,pvalue){
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-tra_rej_rate<-function(data){
+trr<-function(data){
   chi<-mean(sapply(data,function(x){
     ifelse(x[1]>=0.05,0,1)
   }))
@@ -134,16 +134,19 @@ tra_rej_rate<-function(data){
     ifelse(x[2]>=0.95,0,1)
   }))
   cfi_90<-mean(sapply(data,function(x){
-    ifelse(x[2]>=0.90,0,1)
+    ifelse(x[2]>=0.9,0,1)
   }))
   mfi<-mean(sapply(data,function(x){
     ifelse(x[3]>=0.9,0,1)
   }))
-  rmsea<-mean(sapply(data,function(x){
-    ifelse(x[4]>=0.06,1,0)
+  rmsea_05<-mean(sapply(data,function(x){
+    ifelse(x[4]>=0.05,1,0)
+  }))
+  rmsea_08<-mean(sapply(data,function(x){
+    ifelse(x[4]>=0.08,1,0)
   }))
   srmr<-mean(sapply(data,function(x){
     ifelse(x[5]>=0.08,1,0)
   }))
-  data.frame(chi,cfi_95,cfi_90,mfi,rmsea,srmr, row.names = "reject_rate")
+  data.frame(chi,cfi_95,cfi_90,mfi,rmsea_05,rmsea_08,srmr, row.names = "reject_rate")
 }
