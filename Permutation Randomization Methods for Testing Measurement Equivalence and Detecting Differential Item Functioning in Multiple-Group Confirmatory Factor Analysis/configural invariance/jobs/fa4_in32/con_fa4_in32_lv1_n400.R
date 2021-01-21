@@ -50,7 +50,6 @@ gen_dta <-
   }
 
 
-
 # generate traditional AFIs ------------------------------------------------
 
 trad_afi <- function(data, model, AFIs) {
@@ -280,8 +279,8 @@ per_afi_list<-per_afi(
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-trr<-tra_rej_rate(data = tra_afi_list)
+tra_rej_rate<-trr(data = tra_afi_list)
 
 # omnibus reject H0 rate (permutation) -----------------------------------
 
-prr<-per_rej_rate(data = per_afi_list, pvalue = pvalue)
+per_rej_rate<-prr(data = per_afi_list, pvalue = pvalue)
