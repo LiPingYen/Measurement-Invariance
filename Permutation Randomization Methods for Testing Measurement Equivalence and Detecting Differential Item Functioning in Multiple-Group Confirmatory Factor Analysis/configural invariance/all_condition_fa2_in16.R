@@ -1,5 +1,5 @@
 #configural invariance
-#indicator=32, factor= 4
+#indicator=16, factor= 2
 
 library(semTools)
 library(lavaan)
@@ -50,7 +50,6 @@ gen_dta <-
   }
 
 
-
 # generate traditional AFIs ------------------------------------------------
 
 trad_afi <- function(data, model, AFIs) {
@@ -94,7 +93,7 @@ per_afi <-
       permuteMeasEq(
         nPermute = npermu,
         con = fit_config,
-        AFIs = myAFIs,
+        AFIs = AFIs,
         moreAFIs = moreAFIs,
         null = fit_null,
         parallelType = "multicore",
@@ -107,7 +106,7 @@ per_afi <-
 
 #omnibus reject H0 rate (permutation) -----------------------------------------------------
 
-prr <- function(data, pvalue) {
+per_rej_rate <- function(data, pvalue) {
   chi <- mean(sapply(data, function(x) {
     ifelse(x@AFI.pval["chisq"] >= pvalue, 0, 1)
   }))
@@ -129,7 +128,7 @@ prr <- function(data, pvalue) {
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-trr <- function(data) {
+tra_rej_rate <- function(data) {
   chi <- mean(sapply(data, function(x) {
     ifelse(x[1] >= 0.05, 0, 1)
   }))
@@ -137,32 +136,30 @@ trr <- function(data) {
     ifelse(x[2] >= 0.95, 0, 1)
   }))
   cfi_90 <- mean(sapply(data, function(x) {
-    ifelse(x[2] >= 0.9, 0, 1)
+    ifelse(x[2] >= 0.90, 0, 1)
   }))
   mfi <- mean(sapply(data, function(x) {
     ifelse(x[3] >= 0.9, 0, 1)
   }))
-  rmsea_05 <- mean(sapply(data, function(x) {
-    ifelse(x[4] >= 0.05, 1, 0)
-  }))
-  rmsea_08 <- mean(sapply(data, function(x) {
-    ifelse(x[4] >= 0.08, 1, 0)
+  rmsea <- mean(sapply(data, function(x) {
+    ifelse(x[4] >= 0.06, 1, 0)
   }))
   srmr <- mean(sapply(data, function(x) {
     ifelse(x[5] >= 0.08, 1, 0)
   }))
-  data.frame(chi, cfi_95, cfi_90, mfi, rmsea_05, rmsea_08, srmr, row.names = "reject_rate")
+  data.frame(chi, cfi_95, cfi_90, mfi, rmsea, srmr, row.names = "reject_rate")
 }
 
-
+#test configural invariance
+#indicator=16, factor= 2
 #parameter setting
-reps = 2000
-nobs = 100
+reps = 100
+nobs = 1600
 pvalue = 0.05
-n_factor = 4
-n_indicator = 32
+n_factor = 2
+n_indicator = 16
 seed <- sample(1:100000, 1)
-npermu <- 200
+npermu <- 50
 myAFIs_tra <- c("pvalue", "cfi", "mfi", "rmsea", "srmr")
 myAFIs_per <- c("chisq", "cfi", "mfi", "rmsea", "srmr")
 moreAFIs_per <- NULL # c("gammaHat","gammaHat.scaled")
@@ -171,42 +168,30 @@ moreAFIs_per <- NULL # c("gammaHat","gammaHat.scaled")
 #null model
 null_md <-
   c(
-    paste0("X", 1:32, " ~~ c(psi", 1:32, ",psi", 1:32, ")*X", 1:32),
-    paste0("X", 1:32, " ~ c(tau", 1:32, ", tau", 1:32, ")*1")
+    paste0("X", 1:16, " ~~ c(psi", 1:16, ",psi", 1:16, ")*X", 1:16),
+    paste0("X", 1:16, " ~ c(tau", 1:16, ", tau", 1:16, ")*1")
   )
 
 #configural invariance model
 md_conf <- '
-fac1=~X1+X2+X3+X4+X17+X18+X19+X20
-fac2=~X5+X6+X7+X8+X21+X22+X23+X24
-fac3=~X9+X10+X11+X12+X25+X26+X27+X28
-fac4=~X13+X14+X15+X16+X29+X30+X31+X32
+fac1=~X1+X2+X3+X4+X9+X10+X11+X12
+fac2=~X5+X6+X7+X8+X13+X14+X15+X16
 '
 
 #group1
-lambda1 <- matrix(c(0.54,-0.03,-0.02,-0.11,
-                    0.62,0.02,-0.03,-0.03,
-                    0.6,-0.04,-0.03,0,
-                    0.61,0,-0.01,0.08,
-                    0.04,0.61,0.07,0,
-                    -0.06,0.41,-0.03,0.04,
-                    -0.08,0.6,0.07,0.06,
-                    -0.02,0.57,0.05,-0.03,
-                    0.07,-0.01,0.65,0,
-                    -0.01,-0.03,0.43,-0.02,
-                    -0.04,0.06,0.65,0.03,
-                    0.04,0,0.24,0.05,
-                    -0.02,-0.02,-0.01,0.51,
-                    0,-0.13,-0.03,0.53,
-                    0,0.03,-0.01,0.45,
-                    0,0.03,0.02,0.53), nrow = 16, ncol = n_factor, byrow = TRUE)
+lambda1 <- matrix(c(0.54,-0.03,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.04,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
 lambda1 <- rbind(lambda1, lambda1)
 
 phi1 <- matrix(
-  c(1, 0.3, 0.3, 0.3,
-    0.3, 1, 0.3, 0.3,
-    0.3, 0.3, 1, 0.3,
-    0.3, 0.3, 0.3, 1),
+  c(1, 0.3,
+    0.3, 1),
   nrow = n_factor,
   ncol = n_factor,
   byrow = TRUE
@@ -216,36 +201,117 @@ tau1 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean1 = matrix(rep(0, n_factor), nrow = n_factor)
 
 #group2
-#level3
-lambda2 <- matrix(c(0.54,0.7,-0.02,-0.11,
-                    0.62,0.02,-0.03,-0.03,
-                    0.6,-0.04,-0.03,0,
-                    0.61,0,-0.01,0.08,
-                    0.7,0.61,0.07,0,
-                    -0.06,0.41,-0.03,0.04,
-                    -0.08,0.6,0.07,0.06,
-                    -0.02,0.57,0.05,-0.03,
-                    0.07,-0.01,0.65,0,
-                    -0.01,-0.03,0.43,-0.02,
-                    -0.04,0.06,0.65,0.03,
-                    0.04,0,0.24,0.05,
-                    -0.02,-0.02,-0.01,0.51,
-                    0,-0.13,-0.03,0.53,
-                    0,0.03,-0.01,0.45,
-                    0,0.03,0.02,0.53), nrow = 16, ncol=n_factor, byrow = TRUE)
+#level0 (no LOI)
+lambda2 <- matrix(c(0.54,-0.03,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.04,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
 lambda2 <- rbind(lambda2, lambda2)
 
 phi2 <- matrix(
-  c(1, 0.3, 0.3, 0.3,
-    0.3, 1, 0.3, 0.3,
-    0.3, 0.3, 1, 0.3,
-    0.3, 0.3, 0.3, 1),
+  c(1, 0.3,
+    0.3, 1),
+  nrow = n_factor,
+  ncol = n_factor,
+  byrow = TRUE
+)
+theta2 <- diag(rep(1, n_indicator))
+tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
+fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
+
+#level1
+lambda2 <- matrix(c(0.54,-0.03,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.7,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
+lambda2 <- rbind(lambda2, lambda2)
+
+phi2 <- matrix(
+  c(1, 0.3,
+    0.3, 1),
+  nrow = n_factor,
+  ncol = n_factor,
+  byrow = TRUE
+)
+theta2 <- diag(rep(1, n_indicator))
+tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
+fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
+
+#level2
+lambda2 <- matrix(c(0.54,-0.03,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.7,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
+lambda2 <- rbind(lambda2, lambda2)
+
+phi2 <- matrix(
+  c(1, 0.3,
+    0.3, 1),
   nrow = n_factor,
   ncol = n_factor,
   byrow = TRUE
 )
 theta2 <- diag(rep(1, n_indicator))
 theta2[7, 2] <- 0.2
+tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
+fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
+
+#level3
+lambda2 <- matrix(c(0.54,0.7,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.7,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
+lambda2 <- rbind(lambda2, lambda2)
+
+phi2 <- matrix(
+  c(1, 0.3,
+    0.3, 1),
+  nrow = n_factor,
+  ncol = n_factor,
+  byrow = TRUE
+)
+theta2 <- diag(rep(1, n_indicator))
+theta2[7, 2] <- 0.2
+tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
+fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
+
+#level4
+lambda2 <- matrix(c(0.54,0.7,
+                    0.62,0.02,
+                    0.6,-0.04,
+                    0.61,0,
+                    0.7,0.61,
+                    -0.06,0.41,
+                    -0.08,0.6,
+                    -0.02,0.57), nrow = 8, ncol = n_factor, byrow = TRUE)
+lambda2 <- rbind(lambda2, lambda2)
+
+phi2 <- matrix(
+  c(1, 0.3,
+    0.3, 1),
+  nrow = n_factor,
+  ncol = n_factor,
+  byrow = TRUE
+)
+theta2 <- diag(rep(1, n_indicator))
+theta2[7, 2] <- 0.2
+theta2[8, 4] <- 0.2
 tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
 

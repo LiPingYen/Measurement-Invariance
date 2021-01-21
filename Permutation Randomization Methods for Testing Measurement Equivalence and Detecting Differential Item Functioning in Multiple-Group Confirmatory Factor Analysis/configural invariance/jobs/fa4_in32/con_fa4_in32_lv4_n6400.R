@@ -157,7 +157,7 @@ trr <- function(data) {
 
 #parameter setting
 reps = 2000
-nobs = 100
+nobs = 6400
 pvalue = 0.05
 n_factor = 4
 n_indicator = 32
@@ -246,6 +246,7 @@ phi2 <- matrix(
 )
 theta2 <- diag(rep(1, n_indicator))
 theta2[7, 2] <- 0.2
+theta2[8, 4] <- 0.2
 tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
 

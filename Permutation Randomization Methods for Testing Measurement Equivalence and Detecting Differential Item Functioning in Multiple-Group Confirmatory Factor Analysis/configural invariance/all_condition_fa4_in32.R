@@ -343,10 +343,42 @@ phi2 <- matrix(
 )
 theta2 <- diag(rep(1, n_indicator))
 theta2[7, 2] <- 0.2
-theta2[8, 4] <- 0.2
 tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
 
+#level4
+lambda2 <- matrix(c(0.54,0.7,-0.02,-0.11,
+                    0.62,0.02,-0.03,-0.03,
+                    0.6,-0.04,-0.03,0,
+                    0.61,0,-0.01,0.08,
+                    0.7,0.61,0.07,0,
+                    -0.06,0.41,-0.03,0.04,
+                    -0.08,0.6,0.07,0.06,
+                    -0.02,0.57,0.05,-0.03,
+                    0.07,-0.01,0.65,0,
+                    -0.01,-0.03,0.43,-0.02,
+                    -0.04,0.06,0.65,0.03,
+                    0.04,0,0.24,0.05,
+                    -0.02,-0.02,-0.01,0.51,
+                    0,-0.13,-0.03,0.53,
+                    0,0.03,-0.01,0.45,
+                    0,0.03,0.02,0.53), nrow = 16, ncol=n_factor, byrow = TRUE)
+lambda2 <- rbind(lambda2, lambda2)
+
+phi2 <- matrix(
+  c(1, 0.3, 0.3, 0.3,
+    0.3, 1, 0.3, 0.3,
+    0.3, 0.3, 1, 0.3,
+    0.3, 0.3, 0.3, 1),
+  nrow = n_factor,
+  ncol = n_factor,
+  byrow = TRUE
+)
+theta2 <- diag(rep(1, n_indicator))
+theta2[7, 2] <- 0.2
+theta2[8, 4] <- 0.2
+tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
+fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
 
 #generate population
 set.seed(seed)
