@@ -171,7 +171,7 @@ moreAFIs_per <- NULL # c("gammaHat","gammaHat.scaled")
 #null model
 null_md <-
   c(
-    paste0("X", 1:32, " ~~ c(psi", 1:9, ",psi", 1:9, ")*X", 1:32),
+    paste0("X", 1:32, " ~~ c(psi", 1:32, ",psi", 1:32, ")*X", 1:32),
     paste0("X", 1:32, " ~ c(tau", 1:32, ", tau", 1:32, ")*1")
   )
 
