@@ -50,15 +50,15 @@ gen_dta <-
 
 # generate traditional AFIs ------------------------------------------------
 
-trad_afi<-function(data,model,AFIs){
-  mclapply(data,function(x){
-    fit<-cfa(
+trad_afi <- function(data, model, AFIs) {
+  mclapply(data, function(x) {
+    fit <- cfa(
       data = x,
       model = model,
       group = "group",
       std.lv = TRUE
     )
-    fitmeasures(fit,fit.measures = AFIs)
+    fitmeasures(fit, fit.measures = AFIs)
   }, mc.cores = 12)
 }
 
@@ -104,49 +104,49 @@ per_afi <-
 
 #omnibus reject H0 rate (permutation) -----------------------------------------------------
 
-prr<-function(data,pvalue){
-  chi<-mean(sapply(data,function(x){
-    ifelse(x@AFI.pval["chisq"]>=pvalue,0,1)
+prr <- function(data, pvalue) {
+  chi <- mean(sapply(data, function(x) {
+    ifelse(x@AFI.pval["chisq"] >= pvalue, 0, 1)
   }))
-  cfi<-mean(sapply(data,function(x){
-    ifelse(x@AFI.pval["cfi"]>=pvalue,0,1)
+  cfi <- mean(sapply(data, function(x) {
+    ifelse(x@AFI.pval["cfi"] >= pvalue, 0, 1)
   }))
-  mfi<-mean(sapply(data,function(x){
-    ifelse(x@AFI.pval["mfi"]>=pvalue,0,1)
+  mfi <- mean(sapply(data, function(x) {
+    ifelse(x@AFI.pval["mfi"] >= pvalue, 0, 1)
   }))
-  rmsea<-mean(sapply(data,function(x){
-    ifelse(x@AFI.pval["rmsea"]>=pvalue,0,1)
+  rmsea <- mean(sapply(data, function(x) {
+    ifelse(x@AFI.pval["rmsea"] >= pvalue, 0, 1)
   }))
-  srmr<-mean(sapply(data,function(x){
-    ifelse(x@AFI.pval["srmr"]>=pvalue,0,1)
+  srmr <- mean(sapply(data, function(x) {
+    ifelse(x@AFI.pval["srmr"] >= pvalue, 0, 1)
   }))
-  data.frame(chi,cfi,mfi,rmsea,srmr, row.names = "reject_rate")
+  data.frame(chi, cfi, mfi, rmsea, srmr, row.names = "reject_rate")
 }
 
 
 # omnibus reject H0 rate (traditional AFIs) -------------------------------
 
-trr<-function(data){
-  chi<-mean(sapply(data,function(x){
-    ifelse(x[1]>=0.05,0,1)
+trr <- function(data) {
+  chi <- mean(sapply(data, function(x) {
+    ifelse(x[1] >= 0.05, 0, 1)
   }))
-  cfi_95<-mean(sapply(data,function(x){
-    ifelse(x[2]>=0.95,0,1)
+  cfi_95 <- mean(sapply(data, function(x) {
+    ifelse(x[2] >= 0.95, 0, 1)
   }))
-  cfi_90<-mean(sapply(data,function(x){
-    ifelse(x[2]>=0.9,0,1)
+  cfi_90 <- mean(sapply(data, function(x) {
+    ifelse(x[2] >= 0.9, 0, 1)
   }))
-  mfi<-mean(sapply(data,function(x){
-    ifelse(x[3]>=0.9,0,1)
+  mfi <- mean(sapply(data, function(x) {
+    ifelse(x[3] >= 0.9, 0, 1)
   }))
-  rmsea_05<-mean(sapply(data,function(x){
-    ifelse(x[4]>=0.05,1,0)
+  rmsea_05 <- mean(sapply(data, function(x) {
+    ifelse(x[4] >= 0.05, 1, 0)
   }))
-  rmsea_08<-mean(sapply(data,function(x){
-    ifelse(x[4]>=0.08,1,0)
+  rmsea_08 <- mean(sapply(data, function(x) {
+    ifelse(x[4] >= 0.08, 1, 0)
   }))
-  srmr<-mean(sapply(data,function(x){
-    ifelse(x[5]>=0.08,1,0)
+  srmr <- mean(sapply(data, function(x) {
+    ifelse(x[5] >= 0.08, 1, 0)
   }))
-  data.frame(chi,cfi_95,cfi_90,mfi,rmsea_05,rmsea_08,srmr, row.names = "reject_rate")
+  data.frame(chi, cfi_95, cfi_90, mfi, rmsea_05, rmsea_08, srmr, row.names = "reject_rate")
 }
