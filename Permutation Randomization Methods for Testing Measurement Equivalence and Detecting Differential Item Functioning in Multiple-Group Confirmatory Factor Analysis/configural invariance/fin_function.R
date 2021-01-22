@@ -91,7 +91,7 @@ per_afi <-
       permuteMeasEq(
         nPermute = npermu,
         con = fit_config,
-        AFIs = myAFIs,
+        AFIs = AFIs,
         moreAFIs = moreAFIs,
         null = fit_null,
         parallelType = "multicore",
