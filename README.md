@@ -16,7 +16,7 @@ The code conducting simulation is old and worse than the Eunju Jung & Myeongsun 
 
 The folder includes the code for conducting backward method and forward method to test partial metric and partial scalar measurement invariance.
 
-The simulation process and condition can be find in the literature mentioned in the reference part.
+The simulation process and condition can be found in the literature mentioned in the reference part.
 
 ### Permutation Randomization Methods for Testing Measurement Equivalence and Detecting Differential Item Functioning in Multiple-Group Confirmatory Factor Analysis
 
