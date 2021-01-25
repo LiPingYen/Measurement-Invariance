@@ -245,7 +245,9 @@ phi2 <- matrix(
 )
 theta2 <- diag(rep(1, n_indicator))
 theta2[7, 2] <- 0.2
+theta2[2, 7] <- 0.2
 theta2[8, 4] <- 0.2
+theta2[4, 8] <- 0.2
 tau2 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean2 = matrix(rep(0, n_factor), nrow = n_factor)
 
