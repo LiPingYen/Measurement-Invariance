@@ -156,7 +156,7 @@ trr <- function(data) {
 
 #parameter setting
 reps = 2000
-nobs = 100
+nobs = 6400
 pvalue = 0.05
 n_factor = 4
 n_indicator = 32
