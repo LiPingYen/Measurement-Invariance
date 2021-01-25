@@ -215,7 +215,7 @@ tau1 <- matrix(rep(0, n_indicator), nrow = n_indicator)
 fac_mean1 = matrix(rep(0, n_factor), nrow = n_factor)
 
 #group2
-#level3
+#level4
 lambda2 <- matrix(c(0.54,0.7,-0.02,-0.11,
                     0.62,0.02,-0.03,-0.03,
                     0.6,-0.04,-0.03,0,
