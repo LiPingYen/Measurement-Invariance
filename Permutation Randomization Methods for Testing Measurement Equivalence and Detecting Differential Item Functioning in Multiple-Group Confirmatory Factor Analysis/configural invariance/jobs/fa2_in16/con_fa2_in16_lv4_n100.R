@@ -9,7 +9,6 @@ library(parallel)
 
 # generate data from multivariate normal distribution ---------------------
 
-
 #create all data once(final picked)(insanely fast)
 gen_dta <-
   function(nobs,

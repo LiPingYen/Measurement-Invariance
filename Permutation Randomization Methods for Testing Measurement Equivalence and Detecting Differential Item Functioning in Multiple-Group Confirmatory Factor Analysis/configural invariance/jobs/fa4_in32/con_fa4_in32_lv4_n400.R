@@ -9,7 +9,6 @@ library(parallel)
 
 # generate data from multivariate normal distribution ---------------------
 
-
 #create all data once(final picked)(insanely fast)
 gen_dta <-
   function(nobs,
@@ -63,6 +62,7 @@ trad_afi <- function(data, model, AFIs) {
     fitmeasures(fit, fit.measures = AFIs)
   }, mc.cores = 12)
 }
+
 
 # generate permuted AFI ---------------------------------------------------
 
