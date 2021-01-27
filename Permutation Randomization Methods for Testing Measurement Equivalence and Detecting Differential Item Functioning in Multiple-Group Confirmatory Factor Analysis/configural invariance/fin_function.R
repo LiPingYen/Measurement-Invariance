@@ -150,3 +150,7 @@ trr <- function(data) {
   }))
   data.frame(chi, cfi_95, cfi_90, mfi, rmsea_05, rmsea_08, srmr, row.names = "reject_rate")
 }
+
+# remove the population data and permuated AFI list -----------------------
+
+rm(dta, per_afi_list)
