@@ -263,3 +263,7 @@ tra_rej_rate<-trr(data = tra_afi_list)
 # omnibus reject H0 rate (permutation) -----------------------------------
 
 per_rej_rate<-prr(data = per_afi_list, pvalue = pvalue)
+
+# remove the population data and permuated AFI list -----------------------
+
+rm(dta, per_afi_list)
