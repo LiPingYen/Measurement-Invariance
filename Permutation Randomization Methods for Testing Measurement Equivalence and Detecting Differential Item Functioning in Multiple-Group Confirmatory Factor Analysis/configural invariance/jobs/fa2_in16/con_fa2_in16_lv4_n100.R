@@ -45,7 +45,7 @@ gen_dta <-
         ))
       rbind(dta1, dta2) %>%
         mutate(group = c(rep(1, nobs), rep(2, nobs)))
-    }, mc.cores = 12)
+    }, mc.cores = 5)
   }
 
 
@@ -60,7 +60,7 @@ trad_afi <- function(data, model, AFIs) {
       std.lv = TRUE
     )
     fitmeasures(fit, fit.measures = AFIs)
-  }, mc.cores = 12)
+  }, mc.cores = 5)
 }
 
 # generate permuted AFI ---------------------------------------------------
@@ -99,7 +99,7 @@ per_afi <-
         ncpus = 1,
         showProgress = TRUE
       )
-    }, mc.cores = 12)
+    }, mc.cores = 5)
   }
 
 
