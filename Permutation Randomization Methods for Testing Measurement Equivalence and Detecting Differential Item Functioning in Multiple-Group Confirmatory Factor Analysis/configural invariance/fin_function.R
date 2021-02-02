@@ -50,17 +50,24 @@ gen_dta <-
 
 # generate traditional AFIs ------------------------------------------------
 
-trad_afi <- function(data, model, AFIs) {
+trad_afi <- function(data, model , null_model , AFIs) {
   mclapply(data, function(x) {
+    base_fit <- lavaan(
+      data = x,
+      model = null_model,
+      group = "group",
+      std.lv = TRUE
+    )
     fit <- cfa(
       data = x,
       model = model,
       group = "group",
       std.lv = TRUE
     )
-    fitmeasures(fit, fit.measures = AFIs)
-  }, mc.cores = 12)
+    fitmeasures(fit, fit.measures = AFIs, baseline.model = base_fit)
+  }, mc.cores = 5)
 }
+
 
 # generate permuted AFI ---------------------------------------------------
 

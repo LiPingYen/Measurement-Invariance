@@ -51,16 +51,22 @@ gen_dta <-
 
 # generate traditional AFIs ------------------------------------------------
 
-trad_afi <- function(data, model, AFIs) {
+trad_afi <- function(data, model , null_model , AFIs) {
   mclapply(data, function(x) {
+    base_fit <- lavaan(
+      data = x,
+      model = null_model,
+      group = "group",
+      std.lv = TRUE
+    )
     fit <- cfa(
       data = x,
       model = model,
       group = "group",
       std.lv = TRUE
     )
-    fitmeasures(fit, fit.measures = AFIs)
-  }, mc.cores = 12)
+    fitmeasures(fit, fit.measures = AFIs, baseline.model = base_fit)
+  }, mc.cores = 5)
 }
 
 
@@ -337,7 +343,13 @@ dta <- gen_dta(
 
 # testing configural measurement invariance (traditional AFIs) ------------
 
-tra_afi_list<-trad_afi(data = dta,model = md_conf,AFIs = myAFIs_tra)
+tra_afi_list <-
+  trad_afi(
+    data = dta,
+    model = md_conf,
+    null_model = null_md ,
+    AFIs = myAFIs_tra
+  )
 
 # testing configural measurement invariance (permutation)-------------------------------
 
