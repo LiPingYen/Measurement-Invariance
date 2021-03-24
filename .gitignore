@@ -31,3 +31,6 @@ vignettes/*.pdf
 
 # word docx
 *.docx
+
+# csv
+*.csv
