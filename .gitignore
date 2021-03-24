@@ -28,3 +28,6 @@ vignettes/*.pdf
 .Renviron
 .DS_Store
 *.RDataTmp
+
+# word docx
+*.docx
