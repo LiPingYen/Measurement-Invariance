@@ -34,3 +34,6 @@ vignettes/*.pdf
 
 # csv
 *.csv
+
+# DS_Store
+*.DS_Store
