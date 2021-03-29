@@ -1,5 +1,7 @@
 library(lavaan)
 library(dplyr)
+library(ggplot2)
+library(plotly)
 library(testit) # detect error and warning
 
 # parameters setting
@@ -32,13 +34,13 @@ sim <-
     set.seed(seed)
     a <- 1
     b <- 1
-    m <- 1
+    n <- 1
     rep_list <- vector(length = rep, mode = "list")
     warning_fit <- vector(mode = "list")
     warning_data <- vector(mode = "list")
     warning_model <- vector(mode = "list")
     no_converge <- vector(mode = "list")
-    while (m <= rep) {
+    while (n <= rep) {
       cor_outcome <- data.frame()
       stop <-  FALSE
       for (i in 1:3) {
@@ -70,9 +72,9 @@ sim <-
                           nrow = eta_n,
                           ncol = 1,
                           byrow = TRUE)
-            for (n in 1:ind_n[i]) {
-              epsilon[n] <-
-                rnorm(1, mean = epsilon_mean, sd = epsilon_sd[n, 1])
+            for (m in 1:ind_n[i]) {
+              epsilon[m] <-
+                rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
             }
             y <- nu + lambda %*% eta + epsilon
             dta1[k, ] <- c(y, eta, 1)
@@ -87,9 +89,9 @@ sim <-
                           nrow = eta_n,
                           ncol = 1,
                           byrow = TRUE)
-            for (n in 1:ind_n[i]) {
-              epsilon[n] <-
-                rnorm(1, mean = epsilon_mean, sd = epsilon_sd[n, 1])
+            for (m in 1:ind_n[i]) {
+              epsilon[m] <-
+                rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
             }
             y <- nu + lambda %*% eta + epsilon
             dta2[k, ] <- c(y, eta, 2)
@@ -186,10 +188,29 @@ sim <-
       if (stop == TRUE) {
         next
       }
-      rep_list[[m]] <- cor_outcome
-      m <- m + 1
+      rep_list[[n]] <- cor_outcome
+      n <- n + 1
     }
-    outcome_list <- list(rep_list,
+    sum_matrix <- matrix(ncol = 6, nrow = 9)
+    c <- c()
+    for (j in 1:9) {
+      for (k in 1:6) {
+        for (i in 1:rep) {
+          c[i] <- rep_list[[i]][j, k]
+        }
+        sum_matrix[j, k] <- mean(c)
+      }
+    }
+    colnames(sum_matrix) <- names(rep_list[[1]])
+    rownames(sum_matrix) <- row.names(rep_list[[1]])
+    
+    indicator_n = c(rep(4, 3), rep(8, 3), rep(12, 3))
+    factor_loading = rep(c("large", "medium", "small"), 3)
+    outcome_summary <-
+      data.frame(indicator_n, factor_loading, sum_matrix)
+    rownames(outcome_summary) <- 1:9
+    outcome_list <- list(outcome_summary,
+                         rep_list,
                          warning_fit,
                          warning_data,
                          warning_model,
@@ -211,23 +232,51 @@ outcome_list <- sim(
   eta_sd = eta_sd
 )
 
-sum_matrix <- matrix(ncol = 6, nrow = 9)
+# plot
+p1 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = pearson_predict_true)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "Pearson correlation between true factor score and predicted factor score")
+p1 %>% ggplotly()
 
-a <- c()
-for (j in 1:9) {
-  for (k in 1:6) {
-    for (i in 1:rep) {
-      a[i] <- outcome_list[[1]][[i]][j, k]
-    }
-    sum_matrix[j, k] <- mean(a)
-  }
-}
-colnames(sum_matrix) <- names(outcome_list[[1]][[1]])
-rownames(sum_matrix) <- row.names(outcome_list[[1]][[1]])
+p2 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = kendall_predict_true)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "kendall correlation between true factor score and predicted factor score")
+p2 %>% ggplotly()
 
-indicator_n = c(rep(4, 3), rep(8, 3), rep(12, 3))
-factor_loading = rep(c("large", "medium", "small"), 3)
-outcome_summary <- data.frame(indicator_n,factor_loading,sum_matrix)
-rownames(outcome_summary) <- 1:9
-outcome_summary
+p3 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = pearson_predict_sum)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "Pearson correlation between predicted factor score and sum score")
+p3 %>% ggplotly()
 
+p4 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = kendall_predict_sum)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "kendall correlation between predicted factor score and sum score")
+p4 %>% ggplotly()
+
+p5 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = pearson_true_sum)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "pearson correlation between true factor score and sum score")
+p5 %>% ggplotly()
+
+p6 <-
+  ggplot(outcome_list[[1]], aes(x = indicator_n, y = pearson_true_sum)) +
+  geom_line() + geom_point() + facet_grid(factor_loading ~ .) +
+  scale_x_continuous(n.breaks = 3, name = "indicator number") +
+  scale_y_continuous(limits = c(0, 1),name = "correlation coefficient")+
+  labs(title = "kendall correlation between true factor score and sum score")
+p6 %>% ggplotly()
