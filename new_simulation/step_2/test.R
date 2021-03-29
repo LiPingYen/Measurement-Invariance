@@ -1,6 +1,6 @@
 library(lavaan)
 library(dplyr)
-library(testit) # show error and warning
+library(testit) # detect error and warning
 
 # parameters setting
 seed <- 123
@@ -12,7 +12,7 @@ lambda_value <- list(c(0.7, 0.5, 0.6, 0.6),
                      c(0.6, 0.4, 0.5, 0.5),
                      c(0.5, 0.3, 0.4, 0.4))
 lambda_label <- c("large", "medium", "small")
-nu_value <- 1
+nu_value <- 0
 epsilon_mean <- 0
 eta_mean <- 0
 eta_sd <- 1
@@ -32,12 +32,13 @@ sim <-
     set.seed(seed)
     a <- 1
     b <- 1
+    m <- 1
     rep_list <- vector(length = rep, mode = "list")
     warning_fit <- vector(mode = "list")
     warning_data <- vector(mode = "list")
     warning_model <- vector(mode = "list")
     no_converge <- vector(mode = "list")
-    for (m in 1:rep) {
+    while (m <= rep) {
       cor_outcome <- data.frame()
       stop <-  FALSE
       for (i in 1:3) {
@@ -74,7 +75,7 @@ sim <-
                 rnorm(1, mean = epsilon_mean, sd = epsilon_sd[n, 1])
             }
             y <- nu + lambda %*% eta + epsilon
-            dta1[k,] <- c(y, eta, 1)
+            dta1[k, ] <- c(y, eta, 1)
           }
           dta2 <- matrix(ncol = ind_n[i] + 2,
                          nrow = obs_n,
@@ -91,7 +92,7 @@ sim <-
                 rnorm(1, mean = epsilon_mean, sd = epsilon_sd[n, 1])
             }
             y <- nu + lambda %*% eta + epsilon
-            dta2[k,] <- c(y, eta, 2)
+            dta2[k, ] <- c(y, eta, 2)
           }
           dta_all <- rbind(dta1, dta2)
           colnames(dta_all) <-
@@ -186,14 +187,13 @@ sim <-
         next
       }
       rep_list[[m]] <- cor_outcome
+      m <- m + 1
     }
     outcome_list <- list(rep_list,
-         warning_fit,
-         warning_data,
-         warning_model,
-         no_converge)
-    outcome_list[[1]] <-
-      outcome_list[[1]][-which(sapply(outcome_list[[1]], is.null))]
+                         warning_fit,
+                         warning_data,
+                         warning_model,
+                         no_converge)
     outcome_list
   }
 
@@ -210,3 +210,24 @@ outcome_list <- sim(
   eta_mean = eta_mean,
   eta_sd = eta_sd
 )
+
+sum_matrix <- matrix(ncol = 6, nrow = 9)
+
+a <- c()
+for (j in 1:9) {
+  for (k in 1:6) {
+    for (i in 1:rep) {
+      a[i] <- outcome_list[[1]][[i]][j, k]
+    }
+    sum_matrix[j, k] <- mean(a)
+  }
+}
+colnames(sum_matrix) <- names(outcome_list[[1]][[1]])
+rownames(sum_matrix) <- row.names(outcome_list[[1]][[1]])
+
+indicator_n = c(rep(4, 3), rep(8, 3), rep(12, 3))
+factor_loading = rep(c("large", "medium", "small"), 3)
+outcome_summary <- data.frame(indicator_n,factor_loading,sum_matrix)
+rownames(outcome_summary) <- 1:9
+outcome_summary
+
