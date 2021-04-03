@@ -1,3 +1,9 @@
+# rep_list is stored with data and outcome_list
+# includes only detection of converge.
+# remain the condition which non_effect is equal to 0 and 
+# non_proportion is equal to 0.5
+# reorganize plots
+
 library(lavaan)
 library(dplyr)
 library(ggplot2)
@@ -6,8 +12,8 @@ library(plotly)
 
 # parameters setting
 seed <- 123
-rep <- 20
-obs_n <- 200
+rep <- 10
+obs_n <- 1000
 eta_n <- 1
 ind_n <- c(4, 8, 12)
 lambda_value <- list(c(0.7, 0.5, 0.6, 0.6),
@@ -304,6 +310,14 @@ sim <-
                  non_propotion,
                  sum_matrix)
     rownames(outcome_summary) <- 1:dim(outcome_summary)[1]
+    outcome_summary$non_effect <-
+      factor(outcome_summary$non_effect,
+             levels = c("none", "small", "medium", "large"),
+             labels = c("none", "small", "medium", "large"))
+    outcome_summary$non_propotion <-
+      factor(outcome_summary$non_propotion,
+             levels = c("none", "0.25", "0.5"),
+             labels = c("none", "0.25", "0.5"))
     outcome_list <- list(outcome_summary,
                          rep_list,
                          warning_fit,
@@ -328,16 +342,6 @@ outcome_list <- sim(
 )
 
 # plot
-outcome_list[[1]]$non_effect <-
-  factor(outcome_list[[1]]$non_effect,
-         levels = c("none", "small", "medium", "large"),
-         labels = c("none", "small", "medium", "large"))
-
-outcome_list[[1]]$non_propotion <-
-  factor(outcome_list[[1]]$non_propotion,
-         levels = c("none", "0.25", "0.5"),
-         labels = c("none", "0.25", "0.5"))
-
 p1 <-
   ggplot(outcome_list[[1]],
          aes(
@@ -347,7 +351,7 @@ p1 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "Pearson correlation between true factor score and predicted factor score")
 p1 %>% ggplotly()
 
@@ -360,7 +364,7 @@ p2 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "kendall correlation between true factor score and predicted factor score")
 p2 %>% ggplotly()
 
@@ -373,7 +377,7 @@ p3 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "Pearson correlation between predicted factor score and sum score")
 p3 %>% ggplotly()
 
@@ -386,7 +390,7 @@ p4 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "kendall correlation between predicted factor score and sum score")
 p4 %>% ggplotly()
 
@@ -399,7 +403,7 @@ p5 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "pearson correlation between true factor score and sum score")
 p5 %>% ggplotly()
 
@@ -412,6 +416,6 @@ p6 <-
          )) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
   labs(title = "kendall correlation between true factor score and sum score")
 p6 %>% ggplotly()
