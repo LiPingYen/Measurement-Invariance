@@ -1,6 +1,6 @@
 # rep_list is stored with data and outcome_list
 # includes only detection of converge.
-# remain the condition which non_effect is equal to 0 and 
+# remain the condition which non_effect is equal to 0 and
 # non_proportion is equal to 0.5
 # reorganize plots
 
@@ -12,7 +12,7 @@ library(plotly)
 
 # parameters setting
 seed <- 123
-rep <- 10
+rep <- 2
 obs_n <- 1000
 eta_n <- 1
 ind_n <- c(4, 8, 12)
@@ -42,13 +42,7 @@ sim <-
            eta_sd) {
     set.seed(seed)
     a <- 1
-    b <- 1
     n <- 1
-    rep_list <- vector(length = rep, mode = "list")
-    warning_fit <- vector(mode = "list")
-    warning_data <- vector(mode = "list")
-    warning_model <- vector(mode = "list")
-    no_converge <- vector(mode = "list")
     while (n <= rep) {
       cor_outcome <- data.frame()
       stop <-  FALSE
@@ -56,9 +50,6 @@ sim <-
         for (j in 1:3) {
           for (p in 1:4) {
             for (q in 1:2) {
-              if (p == 1 & q == 2) {
-                break
-              }
               lambda <- matrix(
                 rep(lambda_value[[j]], i),
                 nrow = ind_n[i],
@@ -92,7 +83,7 @@ sim <-
                     rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu1 + lambda %*% eta + epsilon
-                dta1[k,] <- c(y, eta, 1)
+                dta1[k, ] <- c(y, eta, 1)
               }
               if (q == 1) {
                 nu2 <- matrix(
@@ -128,7 +119,7 @@ sim <-
                     rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu2 + lambda %*% eta + epsilon
-                dta2[k,] <- c(y, eta, 2)
+                dta2[k, ] <- c(y, eta, 2)
               }
               dta_all <- rbind(dta1, dta2)
               colnames(dta_all) <-
@@ -208,18 +199,9 @@ sim <-
                     model = model,
                     group = "group")
               if (lavInspect(fit, "converged") == FALSE) {
-                warning_fit[[b]] <- fit
-                warning_data[[b]] <- dta_all
-                warning_model[[b]] <- model
-                no_converge[[b]] <- lavInspect(fit, "converged")
-                b <- b + 1
                 stop <-  TRUE
                 break
               } else if (lavInspect(fit, "post.check") == FALSE) {
-                warning_fit[[b]] <- fit
-                warning_data[[b]] <- dta_all
-                warning_model[[b]] <- model
-                b <- b + 1
                 stop <-  TRUE
                 break
               } else{
@@ -241,29 +223,17 @@ sim <-
                     pearson_true_sum = pearson_cor[3, 2],
                     kendall_true_sum = kendall_cor[3, 2]
                   )
-                if (p == 1) {
-                  rownames(cor_all) <-
-                    paste0(
-                      "ind_",
-                      ind_n[i],
-                      "_loading_",
-                      lambda_label[j],
-                      "_effect_",
-                      non_inv_label[p]
-                    )
-                } else{
-                  rownames(cor_all) <-
-                    paste0(
-                      "ind_",
-                      ind_n[i],
-                      "_loading_",
-                      lambda_label[j],
-                      "_effect_",
-                      non_inv_label[p],
-                      "_propotion_",
-                      pror_non_inv_label[q]
-                    )
-                }
+                rownames(cor_all) <-
+                  paste0(
+                    "ind_",
+                    ind_n[i],
+                    "_loading_",
+                    lambda_label[j],
+                    "_effect_",
+                    non_inv_label[p],
+                    "_propotion_",
+                    pror_non_inv_label[q]
+                  )
                 
                 if (a == 1) {
                   cor_outcome <- rbind(NULL, cor_all)
@@ -281,50 +251,9 @@ sim <-
       if (stop == TRUE) {
         next
       }
-      rep_list[[n]] <- cor_outcome
       n <- n + 1
     }
-    sum_matrix <- matrix(ncol = 6, nrow = dim(rep_list[[1]])[1])
-    c <- c()
-    for (j in 1:dim(rep_list[[1]])[1]) {
-      for (k in 1:6) {
-        for (i in 1:rep) {
-          c[i] <- rep_list[[i]][j, k]
-        }
-        sum_matrix[j, k] <- mean(c)
-      }
-    }
-    colnames(sum_matrix) <- names(rep_list[[1]])
-    rownames(sum_matrix) <- row.names(rep_list[[1]])
-    
-    indicator_n <-  c(rep(4, 21), rep(8, 21), rep(12, 21))
-    factor_loading <-
-      rep(c(rep("large", 7), rep("medium", 7), rep("small", 7)), 3)
-    non_effect <-
-      rep(c("none", rep("small", 2), rep("medium", 2), rep("large", 2)), 9)
-    non_propotion <- rep(c("none", rep(c("0.25", "0.5"), 3)), 9)
-    outcome_summary <-
-      data.frame(indicator_n,
-                 factor_loading,
-                 non_effect,
-                 non_propotion,
-                 sum_matrix)
-    rownames(outcome_summary) <- 1:dim(outcome_summary)[1]
-    outcome_summary$non_effect <-
-      factor(outcome_summary$non_effect,
-             levels = c("none", "small", "medium", "large"),
-             labels = c("none", "small", "medium", "large"))
-    outcome_summary$non_propotion <-
-      factor(outcome_summary$non_propotion,
-             levels = c("none", "0.25", "0.5"),
-             labels = c("none", "0.25", "0.5"))
-    outcome_list <- list(outcome_summary,
-                         rep_list,
-                         warning_fit,
-                         warning_data,
-                         warning_model,
-                         no_converge)
-    outcome_list
+    cor_outcome
   }
 
 # all outcome
@@ -344,11 +273,9 @@ outcome_list <- sim(
 # plot
 p1 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = pearson_predict_true,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = pearson_predict_true,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
@@ -357,11 +284,9 @@ p1 %>% ggplotly()
 
 p2 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = kendall_predict_true,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = kendall_predict_true,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
@@ -370,11 +295,9 @@ p2 %>% ggplotly()
 
 p3 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = pearson_predict_sum,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = pearson_predict_sum,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
@@ -383,11 +306,9 @@ p3 %>% ggplotly()
 
 p4 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = kendall_predict_sum,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = kendall_predict_sum,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
@@ -396,11 +317,9 @@ p4 %>% ggplotly()
 
 p5 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = pearson_true_sum,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = pearson_true_sum,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
@@ -409,11 +328,9 @@ p5 %>% ggplotly()
 
 p6 <-
   ggplot(outcome_list[[1]],
-         aes(
-           x = indicator_n,
-           y = pearson_true_sum,
-           color = non_effect
-         )) +
+         aes(x = indicator_n,
+             y = pearson_true_sum,
+             color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
   scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
