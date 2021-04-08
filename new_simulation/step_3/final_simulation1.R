@@ -5,7 +5,7 @@ library(lavaan)
 library(dplyr)
 library(ggplot2)
 library(plotly)
-# library(testit) # detect error and warning # no needed in this step and after simulation step
+# library(testit) # detect error and warning # not needed in this step and after simulation step
 
 # parameters setting
 seed <- 123
