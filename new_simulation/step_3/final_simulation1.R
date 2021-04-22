@@ -5,7 +5,7 @@ library(lavaan)
 library(dplyr)
 library(ggplot2)
 library(plotly)
-# library(testit) # detect error and warning # no needed in this step and after simulation step
+# library(testit) # detect error and warning # not needed in this step and after simulation step
 
 # parameters setting
 seed <- 123
@@ -539,7 +539,7 @@ p5 %>% ggplotly()
 p6 <-
   ggplot(outcome_list[[1]],
          aes(x = indicator_n,
-             y = pearson_true_sum,
+             y = kendall_true_sum,
              color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +

@@ -8,17 +8,17 @@ library(lavaan)
 library(dplyr)
 library(ggplot2)
 library(plotly)
-# library(testit) # detect error and warning # no needed in this and after simulation step
+# library(testit) # detect error and warning # not needed in this and after simulation step
 
 # parameters setting
 seed <- 123
 rep <- 2
 obs_n <- 1000
 eta_n <- 1
-ind_n <- c(4, 8, 12)
-lambda_value <- list(c(0.7, 0.5, 0.6, 0.6),
-                     c(0.6, 0.4, 0.5, 0.5),
-                     c(0.5, 0.3, 0.4, 0.4))
+ind_n <- c(5, 10, 15)
+lambda_value <- list(c(0.7, 0.5, 0.6, 0.6, 0.6),
+                     c(0.6, 0.4, 0.5, 0.5, 0.5),
+                     c(0.5, 0.3, 0.4, 0.4, 0.4))
 lambda_label <- c("large", "medium", "small")
 epsilon_mean <- 0
 eta_mean <- 0
@@ -26,7 +26,7 @@ eta_sd <- 1
 nu1_value <- 0
 nu2_value <- c(0, 0.1, 0.3, 0.5)
 non_inv_label <- c("none", "small", "medium", "large")
-pror_non_inv_label <- c("0.25", "0.5")
+pror_non_inv_label <- c("0.2", "0.4")
 
 # simulation fuction
 sim <-
@@ -43,8 +43,11 @@ sim <-
     set.seed(seed)
     a <- 1
     n <- 1
+<<<<<<< HEAD
+=======
+    cor_outcome <- data.frame()
+>>>>>>> develop
     while (n <= rep) {
-      cor_outcome <- data.frame()
       stop <-  FALSE
       for (i in 1:3) {
         for (j in 1:3) {
@@ -87,7 +90,7 @@ sim <-
               }
               if (q == 1) {
                 nu2 <- matrix(
-                  rep(c(0, 0, 0, nu2_value[p]), i),
+                  rep(c(0, 0, 0, 0, nu2_value[p]), i),
                   nrow = ind_n[i],
                   ncol = 1,
                   byrow = TRUE
@@ -95,7 +98,7 @@ sim <-
               } else{
                 nu2 <- matrix(
                   rep(c(
-                    0, 0, nu2_value[p], nu2_value[p]
+                    0, 0, 0, nu2_value[p], nu2_value[p]
                   ), i),
                   nrow = ind_n[i],
                   ncol = 1,
@@ -127,36 +130,78 @@ sim <-
                   "true_factor_score",
                   "group")
               if (i == 1) {
-                model <-
-                  paste0(
-                    "factor",
-                    eta_n,
-                    "=~",
-                    lambda_value[[j]][1],
-                    "*x1+lm2*x2+lm3*x3+lm4*x4",
-                    "
+                if (p == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5",
+                      "
                     factor",
-                    eta_n,
-                    "~c(0,NA)*1",
-                    "
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
                     x1~tau1*1
                     x2~tau2*1
                     x3~tau3*1
-                    x4~tau4*1"
-                  )
-              } else if (i == 2) {
-                model <-
-                  paste0(
-                    "factor",
-                    eta_n,
-                    "=~",
-                    lambda_value[[j]][1],
-                    "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8",
-                    "
+                    x4~tau4*1
+                    x5~tau5*1"
+                    )
+                } else if (q == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5",
+                      "
                     factor",
-                    eta_n,
-                    "~c(0,NA)*1",
-                    "
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~tau4*1
+                    x5~c(tau51,tau52)*1"
+                    )
+                } else{
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~c(tau41,tau42)*1
+                    x5~c(tau51,tau52)*1"
+                    )
+                }
+              } else if (i == 2) {
+                if (p == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
                     x1~tau1*1
                     x2~tau2*1
                     x3~tau3*1
@@ -164,21 +209,73 @@ sim <-
                     x5~tau5*1
                     x6~tau6*1
                     x7~tau7*1
-                    x8~tau8*1"
-                  )
-              } else{
-                model <-
-                  paste0(
-                    "factor",
-                    eta_n,
-                    "=~",
-                    lambda_value[[j]][1],
-                    "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10+lm11*x11+lm12*x12",
-                    "
+                    x8~tau8*1
+                    x9~tau9*1
+                    x10~tau10*1"
+                    )
+                } else if (q == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10",
+                      "
                     factor",
-                    eta_n,
-                    "~c(0,NA)*1",
-                    "
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~tau4*1
+                    x5~c(tau51,tau52)*1
+                    x6~tau6*1
+                    x7~tau7*1
+                    x8~tau8*1
+                    x9~tau9*1
+                    x10~c(tau101,tau102)*1"
+                    )
+                } else{
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~c(tau41,tau42)*1
+                    x5~c(tau51,tau52)*1
+                    x6~tau6*1
+                    x7~tau7*1
+                    x8~tau8*1
+                    x9~c(tau91,tau92)*1
+                    x10~c(tau101,tau102)*1"
+                    )
+                }
+              } else{
+                if (p == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10+lm11*x11+lm12*x12+lm13*x13+lm14*x14+lm15*x15",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
                     x1~tau1*1
                     x2~tau2*1
                     x3~tau3*1
@@ -190,8 +287,70 @@ sim <-
                     x9~tau9*1
                     x10~tau10*1
                     x11~tau11*1
-                    x12~tau12*1"
-                  )
+                    x12~tau12*1
+                    x13~tau13*1
+                    x14~tau14*1
+                    x15~tau15*1"
+                    )
+                } else if (q == 1) {
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10+lm11*x11+lm12*x12+lm13*x13+lm14*x14+lm15*x15",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~tau4*1
+                    x5~c(tau51,tau52)*1
+                    x6~tau6*1
+                    x7~tau7*1
+                    x8~tau8*1
+                    x9~tau9*1
+                    x10~c(tau101,tau102)*1
+                    x11~tau11*1
+                    x12~tau12*1
+                    x13~tau13*1
+                    x14~tau14*1
+                    x15~c(tau151,tau152)*1"
+                    )
+                } else{
+                  model <-
+                    paste0(
+                      "factor",
+                      eta_n,
+                      "=~",
+                      lambda_value[[j]][1],
+                      "*x1+lm2*x2+lm3*x3+lm4*x4+lm5*x5+lm6*x6+lm7*x7+lm8*x8+lm9*x9+lm10*x10+lm11*x11+lm12*x12+lm13*x13+lm14*x14+lm15*x15",
+                      "
+                    factor",
+                      eta_n,
+                      "~c(0,NA)*1",
+                      "
+                    x1~tau1*1
+                    x2~tau2*1
+                    x3~tau3*1
+                    x4~c(tau41,tau42)*1
+                    x5~c(tau51,tau52)*1
+                    x6~tau6*1
+                    x7~tau7*1
+                    x8~tau8*1
+                    x9~c(tau91,tau92)*1
+                    x10~c(tau101,tau102)*1
+                    x11~tau11*1
+                    x12~tau12*1
+                    x13~tau13*1
+                    x14~c(tau141,tau142)*1
+                    x15~c(tau151,tau152)*1"
+                    )
+                }
               }
               
               fit <-
@@ -253,7 +412,55 @@ sim <-
       }
       n <- n + 1
     }
+<<<<<<< HEAD
     cor_outcome
+=======
+    indicator_n <-
+      rep(c(rep(5, 24), rep(10, 24), rep(15, 24)), rep)
+    factor_loading <-
+      rep(rep(c(
+        rep("large", 8), rep("medium", 8), rep("small", 8)
+      ), 3), rep)
+    non_effect <-
+      rep(rep(c(
+        rep("none", 2),
+        rep("small", 2),
+        rep("medium", 2),
+        rep("large", 2)
+      ), 9), rep)
+    non_propotion <- rep(c(rep(c("0.2", "0.4"), 36)), rep)
+    outcome_summary <-
+      data.frame(indicator_n,
+                 factor_loading,
+                 non_effect,
+                 non_propotion,
+                 cor_outcome)
+    rownames(outcome_summary) <- 1:dim(outcome_summary)[1]
+    outcome_summary$non_effect <-
+      factor(
+        outcome_summary$non_effect,
+        levels = c("none", "small", "medium", "large"),
+        labels = c("none", "small", "medium", "large")
+      )
+    outcome_summary$non_propotion <-
+      factor(
+        outcome_summary$non_propotion,
+        levels = c("0.2", "0.4"),
+        labels = c("0.2", "0.4")
+      )
+    outcome_summary %>% group_by(indicator_n,
+                                 factor_loading,
+                                 non_effect,
+                                 non_propotion) %>%
+      summarise(
+        pearson_predict_true = mean(pearson_predict_true),
+        kendall_predict_true = mean(kendall_predict_true),
+        pearson_predict_sum = mean(pearson_predict_sum),
+        kendall_predict_sum = mean(kendall_predict_sum),
+        pearson_true_sum = mean(pearson_true_sum),
+        kendall_true_sum = mean(kendall_true_sum)
+      )
+>>>>>>> develop
   }
 
 # all outcome
@@ -270,9 +477,14 @@ outcome_list <- sim(
   eta_sd = eta_sd
 )
 
+
 # plot
 p1 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
+=======
+  ggplot(outcome_list,
+>>>>>>> develop
          aes(x = indicator_n,
              y = pearson_predict_true,
              color = non_effect)) +
@@ -283,18 +495,26 @@ p1 <-
 p1 %>% ggplotly()
 
 p2 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
+=======
+  ggplot(outcome_list,
+>>>>>>> develop
          aes(x = indicator_n,
              y = kendall_predict_true,
              color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
   labs(title = "kendall correlation between true factor score and predicted factor score")
 p2 %>% ggplotly()
 
 p3 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
+=======
+  ggplot(outcome_list,
+>>>>>>> develop
          aes(x = indicator_n,
              y = pearson_predict_sum,
              color = non_effect)) +
@@ -305,7 +525,11 @@ p3 <-
 p3 %>% ggplotly()
 
 p4 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
+=======
+  ggplot(outcome_list,
+>>>>>>> develop
          aes(x = indicator_n,
              y = kendall_predict_sum,
              color = non_effect)) +
@@ -316,7 +540,11 @@ p4 <-
 p4 %>% ggplotly()
 
 p5 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
+=======
+  ggplot(outcome_list,
+>>>>>>> develop
          aes(x = indicator_n,
              y = pearson_true_sum,
              color = non_effect)) +
@@ -327,12 +555,18 @@ p5 <-
 p5 %>% ggplotly()
 
 p6 <-
+<<<<<<< HEAD
   ggplot(outcome_list[[1]],
          aes(x = indicator_n,
              y = pearson_true_sum,
+=======
+  ggplot(outcome_list,
+         aes(x = indicator_n,
+             y = kendall_true_sum,
+>>>>>>> develop
              color = non_effect)) +
   geom_line() + geom_point() + facet_grid(factor_loading ~ non_propotion) +
   scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
+  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
   labs(title = "kendall correlation between true factor score and sum score")
 p6 %>% ggplotly()
