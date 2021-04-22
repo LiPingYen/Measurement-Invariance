@@ -780,6 +780,17 @@ sim <-
                     kendall_true_sum_1_2_inv = kendall_cor_1_2_inv[3, 2],
                     run_time = run_time
                   )
+                rownames(cor_all) <-
+                  paste0(
+                    "ind_",
+                    ind_n[i],
+                    "_loading_",
+                    lambda_label[j],
+                    "_effect_",
+                    non_inv_label[p],
+                    "_propotion_",
+                    pror_non_inv_label[q]
+                  )
                 run_time <- 0
                 if (a == 1) {
                   cor_outcome <- rbind(NULL, cor_all)
