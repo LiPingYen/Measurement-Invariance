@@ -762,23 +762,19 @@ sim <-
                 
                 cor_all <-
                   data.frame(
-                    pearson_predict_true = pearson_cor_all[2, 1],
-                    kendall_predict_true_all =  kendall_cor_all[2, 1],
-                    pearson_true_sum = pearson_cor_all[3, 2],
-                    kendall_true_sum_all = kendall_cor_all[3, 2],
-                    kendall_predict_true_betw = kendall_cor_between[2, 1],
-                    kendall_true_sum_betw = kendall_cor_between[3, 2],
-                    kendall_predict_true_1_2 = kendall_cor_1_2[2, 1],
-                    kendall_true_sum_1_2 = kendall_cor_1_2[3, 2],
-                    pearson_predict_true_inv = pearson_cor_all_inv[2, 1],
-                    kendall_predict_true_all_inv =  kendall_cor_all_inv[2, 1],
-                    pearson_true_sum_inv = pearson_cor_all_inv[3, 2],
-                    kendall_true_sum_all_inv = kendall_cor_all_inv[3, 2],
-                    kendall_predict_true_betw_inv = kendall_cor_between_inv[2, 1],
-                    kendall_true_sum_betw_inv = kendall_cor_between_inv[3, 2],
-                    kendall_predict_true_1_2_inv = kendall_cor_1_2_inv[2, 1],
-                    kendall_true_sum_1_2_inv = kendall_cor_1_2_inv[3, 2],
-                    run_time = run_time
+                    cor_type = c(
+                      "predict_true_betw",
+                      "true_sum_betw",
+                      "predict_true_betw_inv",
+                      "true_sum_betw_inv"
+                    ),
+                    estimate = c(
+                      kendall_cor_between[2, 1],
+                      kendall_cor_between[3, 2],
+                      kendall_cor_between_inv[2, 1],
+                      kendall_cor_between_inv[3, 2]
+                    ),
+                    runtime = rep(run_time, 4)
                   )
                 rownames(cor_all) <-
                   paste0(
@@ -789,7 +785,9 @@ sim <-
                     "_effect_",
                     non_inv_label[p],
                     "_propotion_",
-                    pror_non_inv_label[q]
+                    pror_non_inv_label[q],
+                    "_",
+                    1:4
                   )
                 run_time <- 0
                 if (a == 1) {
@@ -811,19 +809,22 @@ sim <-
       n <- n + 1
     }
     indicator_n <-
-      rep(c(rep(5, 24), rep(10, 24), rep(15, 24)), rep)
+      rep(c(rep(5, 96), rep(10, 96), rep(15, 96)), rep)
     factor_loading <-
       rep(rep(c(
-        rep("small", 8), rep("medium", 8), rep("large", 8)
+        rep("small", 32), rep("medium", 32), rep("large", 32)
       ), 3), rep)
     non_effect <-
       rep(rep(c(
-        rep("none", 2),
-        rep("small", 2),
-        rep("medium", 2),
-        rep("large", 2)
+        rep("none", 8),
+        rep("small", 8),
+        rep("medium", 8),
+        rep("large", 8)
       ), 9), rep)
-    non_propotion <- rep(c(rep(c("0.2", "0.4"), 36)), rep)
+    non_propotion <-
+      rep(c(rep(c(
+        rep("0.2", 4), rep("0.4", 4)
+      ), 36)), rep)
     outcome_all <-
       data.frame(indicator_n,
                  factor_loading,
@@ -848,28 +849,33 @@ sim <-
         levels = c("0.2", "0.4"),
         labels = c("0.2", "0.4")
       )
+    outcome_all$cor_type <-
+      factor(
+        outcome_all$cor_type,
+        levels = c(
+          "predict_true_betw",
+          "true_sum_betw",
+          "predict_true_betw_inv",
+          "true_sum_betw_inv"
+        ),
+        labels = c(
+          "predict_true_betw",
+          "true_sum_betw",
+          "predict_true_betw_inv",
+          "true_sum_betw_inv"
+        )
+      )
     outcome_summary <-
-      outcome_all[, -ncol(outcome_all)] %>% group_by(indicator_n,
-                                                     factor_loading,
-                                                     non_effect,
-                                                     non_propotion) %>%
+      outcome_all[, -ncol(outcome_all)] %>%
+      group_by(indicator_n,
+               factor_loading,
+               non_effect,
+               non_propotion,
+               cor_type) %>%
       summarise(
-        pearson_predict_true = mean(pearson_predict_true),
-        kendall_predict_true_all = mean(kendall_predict_true_all),
-        pearson_true_sum = mean(pearson_true_sum),
-        kendall_true_sum_all = mean(kendall_true_sum_all),
-        kendall_predict_true_betw = mean(kendall_predict_true_betw),
-        kendall_true_sum_betw = mean(kendall_true_sum_betw),
-        kendall_predict_true_1_2 = mean(kendall_predict_true_1_2),
-        kendall_true_sum_1_2 = mean(kendall_true_sum_1_2),
-        pearson_predict_true_inv = mean(pearson_predict_true_inv),
-        kendall_predict_true_all_inv = mean(kendall_predict_true_all_inv),
-        pearson_true_sum_inv = mean(pearson_true_sum_inv),
-        kendall_true_sum_all_inv = mean(kendall_true_sum_all_inv),
-        kendall_predict_true_betw_inv = mean(kendall_predict_true_betw_inv),
-        kendall_true_sum_betw_inv = mean(kendall_true_sum_betw_inv),
-        kendall_predict_true_1_2_inv = mean(kendall_predict_true_1_2_inv),
-        kendall_true_sum_1_2_inv = mean(kendall_true_sum_1_2_inv)
+        estimate = mean(estimate),
+        lower = min(estimate),
+        upper = max(estimate)
       )
     list(outcome_summary, outcome_all)
   }
