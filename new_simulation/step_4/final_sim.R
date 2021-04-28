@@ -7,14 +7,13 @@
 library(lavaan)
 library(dplyr)
 library(ggplot2)
-library(plotly)
-library(ggpubr)
 library(pcaPP)
+library(progress)
 # library(testit) # detect error and warning # not needed in this and after simulation step
 
 # parameters setting
 seed <- 123
-rep <- 20
+rep <- 30
 obs_n <- 400
 eta_n <- 1
 ind_n <- c(5, 10, 15)
@@ -43,12 +42,22 @@ sim <-
            epsilon_mean,
            eta_mean,
            eta_sd) {
+    pb <- progress_bar$new(
+      format = "  Processing [:bar] :percent in :elapsedfull  loop: :current",
+      complete = "=",
+      incomplete = "-",
+      current = ">",
+      total = rep,
+      clear = FALSE,
+      width = 60
+    )
     set.seed(seed)
     a <- 1
     n <- 1
     run_time <- 0
     cor_outcome <- data.frame()
     while (n <= rep) {
+      pb$tick()
       stop <-  FALSE
       for (i in 1:3) {
         for (j in 1:3) {
@@ -87,7 +96,7 @@ sim <-
                     rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu1 + lambda %*% eta + epsilon
-                dta1[k, ] <- c(y, eta, 1)
+                dta1[k,] <- c(y, eta, 1)
               }
               if (q == 1) {
                 nu2 <- matrix(
@@ -123,7 +132,7 @@ sim <-
                     rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu2 + lambda %*% eta + epsilon
-                dta2[k, ] <- c(y, eta, 2)
+                dta2[k,] <- c(y, eta, 2)
               }
               dta_all <- rbind(dta1, dta2)
               colnames(dta_all) <-
@@ -776,19 +785,6 @@ sim <-
                     ),
                     runtime = rep(run_time, 4)
                   )
-                rownames(cor_all) <-
-                  paste0(
-                    "ind_",
-                    ind_n[i],
-                    "_loading_",
-                    lambda_label[j],
-                    "_effect_",
-                    non_inv_label[p],
-                    "_propotion_",
-                    pror_non_inv_label[q],
-                    "_",
-                    1:4
-                  )
                 run_time <- 0
                 if (a == 1) {
                   cor_outcome <- rbind(NULL, cor_all)
@@ -821,7 +817,7 @@ sim <-
         rep("medium", 8),
         rep("large", 8)
       ), 9), rep)
-    non_propotion <-
+    non_proportion <-
       rep(c(rep(c(
         rep("0.2", 4), rep("0.4", 4)
       ), 36)), rep)
@@ -829,29 +825,42 @@ sim <-
       data.frame(indicator_n,
                  factor_loading,
                  non_effect,
-                 non_propotion,
-                 cor_outcome)
-    outcome_all$factor_loading <-
+                 non_proportion,
+                 cor_outcome) %>%
+      rename(
+        Indicator_N = indicator_n,
+        Factor_Loading = factor_loading,
+        Noninvariance_Effect = non_effect,
+        Noninvariance_Proportion = non_proportion,
+        Correlation_Type = cor_type
+      )
+    outcome_all$Indicator_N <-
       factor(
-        outcome_all$factor_loading,
+        outcome_all$Indicator_N,
+        levels = c("5", "10", "15"),
+        labels = c("5", "10", "15")
+      )
+    outcome_all$Factor_Loading <-
+      factor(
+        outcome_all$Factor_Loading,
         levels = c("small", "medium", "large"),
         labels = c("small", "medium", "large")
       )
-    outcome_all$non_effect <-
+    outcome_all$Noninvariance_Effect <-
       factor(
-        outcome_all$non_effect,
+        outcome_all$Noninvariance_Effect,
         levels = c("none", "small", "medium", "large"),
         labels = c("none", "small", "medium", "large")
       )
-    outcome_all$non_propotion <-
+    outcome_all$Noninvariance_Proportion <-
       factor(
-        outcome_all$non_propotion,
+        outcome_all$Noninvariance_Proportion,
         levels = c("0.2", "0.4"),
         labels = c("0.2", "0.4")
       )
-    outcome_all$cor_type <-
+    outcome_all$Correlation_Type <-
       factor(
-        outcome_all$cor_type,
+        outcome_all$Correlation_Type,
         levels = c(
           "predict_true_betw",
           "true_sum_betw",
@@ -859,24 +868,25 @@ sim <-
           "true_sum_betw_inv"
         ),
         labels = c(
-          "predict_true_betw",
-          "true_sum_betw",
-          "predict_true_betw_inv",
-          "true_sum_betw_inv"
+          "predict true between",
+          "true sum between",
+          "predict true between invariance",
+          "true sum between invariance"
         )
       )
+    
     outcome_summary <-
       outcome_all[, -ncol(outcome_all)] %>%
-      group_by(indicator_n,
-               factor_loading,
-               non_effect,
-               non_propotion,
-               cor_type) %>%
+      group_by(Indicator_N,
+               Factor_Loading,
+               Noninvariance_Effect,
+               Noninvariance_Proportion,
+               Correlation_Type) %>%
       summarise(
-        estimate = mean(estimate),
+        mean_est = mean(estimate),
         lower = min(estimate),
         upper = max(estimate)
-      )
+      ) 
     list(outcome_summary, outcome_all)
   }
 
@@ -894,128 +904,52 @@ outcome_list <- sim(
   eta_sd = eta_sd
 )
 
-
 # plot
-p1 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = pearson_predict_true,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
-  labs(title = "Pearson correlation between true factor score and predicted factor score")
-p1 %>% ggplotly()
 
-p2 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_predict_true_all,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and predicted factor score (all)")
-p2 %>% ggplotly()
-
-p3 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = pearson_true_sum,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.5, 1), name = "correlation coefficient") +
-  labs(title = "pearson correlation between true factor score and sum score")
-p3 %>% ggplotly()
-
-p4 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_true_sum_all,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and sum score (all)")
-p4 %>% ggplotly()
-
-p5 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_predict_true_betw,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and predicted factor score (between)")
-p5 %>% ggplotly()
-
-p6 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_true_sum_betw,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and sum score (between)")
-p6 %>% ggplotly()
-
-ggarrange(p5,
-          p6,
-          common.legend = TRUE,
-          nrow = 2,
-          legend = "right")
-
-p7 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_predict_true_1_2,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and predicted factor score (average)")
-p7 %>% ggplotly()
-
-p8 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_true_sum_1_2,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.4, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and sum score (average)")
-p8 %>% ggplotly()
-
-p9 <-
-  ggplot(
-    outcome_list[[1]],
-    aes(x = indicator_n,
-        y = kendall_predict_true_betw_inv,
-        color = non_effect)
+p1 <- ggplot(outcome_list[[1]],
+             aes(Indicator_N, mean_est,
+                 group = Correlation_Type)) +
+  geom_hline(
+    yintercept = 0.5,
+    linetype = 1,
+    colour = "grey80",
+    size = 0.3
   ) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.3, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and predicted factor score (between) only invariance indicators")
-p9 %>% ggplotly()
+  coord_cartesian(ylim = c(0, 1)) +
+  geom_point(
+    aes(shape = Correlation_Type, colour = Correlation_Type),
+    position = position_dodge(width = .7),
+    size = 1,
+    show.legend = c(colour = TRUE)
+  ) +
+  scale_shape_manual(values = c(17, 15, 4, 3)) +
+  scale_colour_manual(values = c("#F8766D", "#619CFF", "#00BA38", "#E69F00")) +
+  scale_x_discrete(labels = c("5", "10", "15")) +
+  geom_linerange(
+    aes(
+      colour = Correlation_Type,
+      ymin = lower,
+      ymax = upper
+    ),
+    position = position_dodge(width = .7),
+    size = .5,
+    show.legend = c(colour = FALSE)
+  ) +
+  labs(x = "Indicator Number", y = "Parameter Estimate", title = "Kendall Tau between groups") +
+  scale_y_continuous(breaks = c(0.2, 0.4, 0.6, 0.8)) +
+  facet_grid(
+    Factor_Loading + Noninvariance_Proportion ~ Noninvariance_Effect,
+    labeller = labeller(.rows = label_both, .cols = label_both)
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 20),
+    strip.background = element_rect(fill = "white", color = "white", size = 1),
+    panel.grid.major = element_line(color = "white"),
+    panel.grid.minor = element_line(color = "white"),
+    strip.text.x = element_text(size = 10),
+    strip.text.y = element_text(angle = -90, size = 7),
+    legend.position = "bottom"
+  )
 
-p10 <-
-  ggplot(outcome_list[[1]],
-         aes(x = indicator_n,
-             y = kendall_true_sum_betw_inv,
-             color = non_effect)) +
-  geom_line() + geom_point() + facet_grid(non_propotion ~ factor_loading) +
-  scale_x_continuous(n.breaks = 3, name = "indicator number") +
-  scale_y_continuous(limits = c(0.3, 1), name = "correlation coefficient") +
-  labs(title = "kendall correlation between true factor score and sum score (between) only invariance indicators")
-p10 %>% ggplotly()
-
-ggarrange(p9,
-          p10,
-          common.legend = TRUE,
-          nrow = 2,
-          legend = "right")
+p1
