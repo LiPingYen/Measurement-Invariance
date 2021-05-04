@@ -7,7 +7,9 @@ library(tictoc)
 library(dtplyr)
 library(latex2exp)
 library(ggpubr)
+library(dqrng)
 options(dplyr.summarise.inform = FALSE)
+
 # library(testit) # detect error and warning # not needed in this and after simulation step
 
 # parameters setting
@@ -44,7 +46,7 @@ sim <-
     tic.clearlog()
     tic("total")
     pb <- progress_bar$new(
-      format = "  Processing [:bar] :percent in :elapsedfull  loop: :current/:total",
+      format = " [:bar] :percent in :elapsedfull  loop: :current/:total",
       complete = "=",
       incomplete = "-",
       current = ">",
@@ -58,9 +60,10 @@ sim <-
     a <- 1
     n <- 1
     run_time <- 0
-    cor_all <- vector(mode = "list", length = 288 * rep)
+    all_outcome <- vector(mode = "list", length = rep)
     while (n <= rep) {
       pb$tick()
+      sub_outcome <- vector(mode = "list", length = 72)
       stop <-  FALSE
       for (i in 1:3) {
         for (j in 1:3) {
@@ -87,7 +90,7 @@ sim <-
                              byrow = TRUE)
               for (k in seq_len(obs_n)) {
                 eta_value <-
-                  rnorm(eta_n, mean = eta_mean, sd = eta_sd)
+                  dqrnorm(eta_n, mean = eta_mean, sd = eta_sd)
                 eta <- matrix(
                   eta_value,
                   nrow = eta_n,
@@ -96,10 +99,10 @@ sim <-
                 )
                 for (m in seq_len(ind_n[i])) {
                   epsilon[m] <-
-                    rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
+                    dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu1 + lambda %*% eta + epsilon
-                dta1[k, ] <- c(y, eta, 1)
+                dta1[k,] <- c(y, eta, 1)
               }
               if (q == 1) {
                 nu2 <- matrix(
@@ -123,7 +126,7 @@ sim <-
                              byrow = TRUE)
               for (k in seq_len(obs_n)) {
                 eta_value <-
-                  rnorm(eta_n, mean = eta_mean, sd = eta_sd)
+                  dqrnorm(eta_n, mean = eta_mean, sd = eta_sd)
                 eta <- matrix(
                   eta_value,
                   nrow = eta_n,
@@ -132,10 +135,10 @@ sim <-
                 )
                 for (m in seq_len(ind_n[i])) {
                   epsilon[m] <-
-                    rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
+                    dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu2 + lambda %*% eta + epsilon
-                dta2[k, ] <- c(y, eta, 2)
+                dta2[k,] <- c(y, eta, 2)
               }
               dta_all <- rbind(dta1, dta2)
               colnames(dta_all) <-
@@ -772,7 +775,7 @@ sim <-
                     "true_factor_score_1_2",
                     "sum_score_1_2")
                 
-                cor_all[[a]] <-
+                sub_outcome[[a]] <-
                   data.frame(
                     cor_type = c(
                       "predict_true_betw",
@@ -792,18 +795,28 @@ sim <-
                 a <- a + 1
               }
             }
+            if (stop == TRUE) {
+              break
+            }
+          }
+          if (stop == TRUE) {
+            break
           }
         }
-        if (stop == TRUE)
+        if (stop == TRUE) {
           break
+        }
       }
       if (stop == TRUE) {
+        sub_outcome <- NULL
         next
       }
+      all_outcome[[n]] <- do.call(rbind, sub_outcome)
+      sub_outcome <- NULL
       n <- n + 1
     }
     pb$terminate()
-    cor_outcome <- do.call(rbind, cor_all)
+    cor_outcome <- do.call(rbind, all_outcome)
     indicator_n <-
       rep(c(rep(5, 96), rep(10, 96), rep(15, 96)), rep)
     factor_loading <-

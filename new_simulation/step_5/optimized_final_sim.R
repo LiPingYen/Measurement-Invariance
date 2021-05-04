@@ -2,13 +2,13 @@ library(lavaan)
 library(dplyr, warn.conflicts = FALSE)
 library(ggplot2)
 library(pcaPP)
-library(progress)
 library(tictoc)
 library(dtplyr)
 library(latex2exp)
+library(ggpubr)
+library(dqrng)
 options(dplyr.summarise.inform = FALSE)
-# library(testit) # detect error and warning # not needed in this and after simulation step
-
+setwd("/Users/tayloryen/Desktop/github project/Measurement-Invariance/new_simulation/step_5")
 
 # parameters setting ------------------------------------------------------
 
@@ -48,25 +48,14 @@ sim <-
            eta_sd) {
     tic.clearlog()
     tic("total")
-    pb <- progress_bar$new(
-      format = "  Processing [:bar] :percent in :elapsedfull  loop: :current/:total",
-      complete = "=",
-      incomplete = "-",
-      current = ">",
-      total = rep,
-      clear = FALSE,
-      width = 60,
-      show_after = 0
-    )
-    pb$tick(0)
     set.seed(seed)
-    a <- 1
     n <- 1
     run_time <- 0
-    cor_all <- vector(mode = "list", length = 288 * rep)
+    all_outcome <- vector(mode = "list", length = rep)
     while (n <= rep) {
-      pb$tick()
+      a <- 1
       stop <-  FALSE
+      sub_outcome <- vector(mode = "list", length = 72)
       for (i in 1:3) {
         for (j in 1:3) {
           for (p in 1:4) {
@@ -92,7 +81,7 @@ sim <-
                              byrow = TRUE)
               for (k in seq_len(obs_n)) {
                 eta_value <-
-                  rnorm(eta_n, mean = eta_mean, sd = eta_sd)
+                  dqrnorm(eta_n, mean = eta_mean, sd = eta_sd)
                 eta <- matrix(
                   eta_value,
                   nrow = eta_n,
@@ -101,7 +90,7 @@ sim <-
                 )
                 for (m in seq_len(ind_n[i])) {
                   epsilon[m] <-
-                    rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
+                    dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu1 + lambda %*% eta + epsilon
                 dta1[k, ] <- c(y, eta, 1)
@@ -128,7 +117,7 @@ sim <-
                              byrow = TRUE)
               for (k in seq_len(obs_n)) {
                 eta_value <-
-                  rnorm(eta_n, mean = eta_mean, sd = eta_sd)
+                  dqrnorm(eta_n, mean = eta_mean, sd = eta_sd)
                 eta <- matrix(
                   eta_value,
                   nrow = eta_n,
@@ -137,7 +126,7 @@ sim <-
                 )
                 for (m in seq_len(ind_n[i])) {
                   epsilon[m] <-
-                    rnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
+                    dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu2 + lambda %*% eta + epsilon
                 dta2[k, ] <- c(y, eta, 2)
@@ -777,7 +766,7 @@ sim <-
                     "true_factor_score_1_2",
                     "sum_score_1_2")
                 
-                cor_all[[a]] <-
+                sub_outcome[[a]] <-
                   data.frame(
                     cor_type = c(
                       "predict_true_betw",
@@ -797,18 +786,30 @@ sim <-
                 a <- a + 1
               }
             }
+            if (stop == TRUE) {
+              break
+            }
+          }
+          if (stop == TRUE) {
+            break
           }
         }
-        if (stop == TRUE)
+        if (stop == TRUE) {
           break
+        }
       }
       if (stop == TRUE) {
+        sub_outcome <- NULL
         next
+      }
+      all_outcome[[n]] <- do.call(rbind, sub_outcome)
+      sub_outcome <- NULL
+      if (n %% 10 == 0) {
+        print(paste0("Loop:", n))
       }
       n <- n + 1
     }
-    pb$terminate()
-    cor_outcome <- do.call(rbind, cor_all)
+    cor_outcome <- do.call(rbind, all_outcome)
     indicator_n <-
       rep(c(rep(5, 96), rep(10, 96), rep(15, 96)), rep)
     factor_loading <-
@@ -833,15 +834,15 @@ sim <-
                  non_proportion,
                  cor_outcome) %>%
       rename(
-        Indicator_N = indicator_n,
+        Indicator = indicator_n,
         Loading = factor_loading,
         Effect = non_effect,
         Proportion = non_proportion,
         Type = cor_type
       )
-    outcome_all$Indicator_N <-
+    outcome_all$Indicator <-
       factor(
-        outcome_all$Indicator_N,
+        outcome_all$Indicator,
         levels = c("5", "10", "15"),
         labels = c("5", "10", "15")
       )
@@ -882,7 +883,7 @@ sim <-
     outcome_summary <-
       outcome_all[, -ncol(outcome_all)] %>%
       lazy_dt() %>%
-      group_by(Indicator_N,
+      group_by(Indicator,
                Loading,
                Effect,
                Proportion,
@@ -926,22 +927,16 @@ outcome_proportion_2 <- outcome_list[[1]] %>%
 labels <-
   unname(TeX(
     c(
-      "$\\tau_{\\hat{\\eta}\\eta}$ (all items)",
-      "$\\tau_{X \\eta}$ (all items)",
-      "$\\tau_{\\hat{\\eta}\\eta}$ (fair items)",
-      "$\\tau_{X \\eta}$ (fair items)"
+      "$\\tau_{\\hat{\\eta}\\eta}$ (All items)",
+      "$\\tau_{x \\eta}$ (All items)",
+      "$\\tau_{\\hat{\\eta}\\eta}$ (Fair items)",
+      "$\\tau_{x \\eta}$ (Aair items)"
     )
   ))
 p1 <- ggplot(outcome_proportion_1,
-             aes(Indicator_N, mean_est,
+             aes(Effect, mean_est,
                  group = Type)) +
-  geom_hline(
-    yintercept = 0.5,
-    linetype = 1,
-    colour = "grey80",
-    size = 0.3
-  ) +
-  coord_cartesian(ylim = c(0.3, 1)) +
+  coord_cartesian(ylim = c(0.3, 0.9)) +
   geom_point(
     aes(shape = Type, colour = Type),
     position = position_dodge(width = .7),
@@ -951,7 +946,7 @@ p1 <- ggplot(outcome_proportion_1,
   scale_shape_manual(values = c(17, 15, 4, 3), labels = labels) +
   scale_colour_manual(values = c("#F8766D", "#619CFF", "#00BA38", "#E69F00"),
                       labels = labels) +
-  scale_x_discrete(labels = c("5", "10", "15")) +
+  scale_x_discrete(labels = c("None", "Small", "Medium", "Large")) +
   geom_linerange(
     aes(
       colour = Type,
@@ -963,23 +958,32 @@ p1 <- ggplot(outcome_proportion_1,
     show.legend = c(colour = FALSE)
   ) +
   labs(
-    x = "Indicator Number",
+    x = "Effect",
     y = "Parameter Estimate",
-    title = "Kendall Tau between groups",
+    title = TeX(r"(Kendall's $\tau$ between groups)", bold = TRUE),
     subtitle = "Proportion = 0.2"
   ) +
   scale_y_continuous(breaks = c(0.4, 0.6, 0.8)) +
-  facet_grid(Loading ~ Effect,
-             labeller = labeller(.rows = label_both, .cols = label_both)) +
+  facet_grid(
+    Loading ~ Indicator,
+    labeller = labeller(
+      .cols = label_both,
+      Loading = as_labeller(c(
+        `small` = "Small",
+        `medium` = "Medium",
+        `large` = "Large"
+      ),default = label_both)
+    )
+  ) +
   theme_bw() +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),
+    plot.title = element_text(hjust = 0.5, size = 35),
     plot.subtitle = element_text(size = 15),
     axis.title.x = element_text(size = 15),
     axis.title.y = element_text(size = 15),
     strip.background = element_rect(fill = "white", color = "white", size = 1),
-    panel.grid.major = element_line(color = "white"),
-    panel.grid.minor = element_line(color = "white"),
+    panel.grid.major = element_line(color = "gray"),
+    panel.grid.minor = element_line(color = "gray"),
     strip.text.x = element_text(size = 10),
     strip.text.y = element_text(angle = -90, size = 10),
     legend.position = "bottom",
@@ -988,15 +992,9 @@ p1 <- ggplot(outcome_proportion_1,
   )
 
 p2 <- ggplot(outcome_proportion_2,
-             aes(Indicator_N, mean_est,
+             aes(Effect, mean_est,
                  group = Type)) +
-  geom_hline(
-    yintercept = 0.5,
-    linetype = 1,
-    colour = "grey80",
-    size = 0.3
-  ) +
-  coord_cartesian(ylim = c(0.3, 1)) +
+  coord_cartesian(ylim = c(0.3, 0.9)) +
   geom_point(
     aes(shape = Type, colour = Type),
     position = position_dodge(width = .7),
@@ -1006,7 +1004,7 @@ p2 <- ggplot(outcome_proportion_2,
   scale_shape_manual(values = c(17, 15, 4, 3), labels = labels) +
   scale_colour_manual(values = c("#F8766D", "#619CFF", "#00BA38", "#E69F00"),
                       labels = labels) +
-  scale_x_discrete(labels = c("5", "10", "15")) +
+  scale_x_discrete(labels = c("None", "Small", "Medium", "Large")) +
   geom_linerange(
     aes(
       colour = Type,
@@ -1017,18 +1015,27 @@ p2 <- ggplot(outcome_proportion_2,
     size = .5,
     show.legend = c(colour = FALSE)
   ) +
-  labs(x = "Indicator Number", y = "Parameter Estimate",  subtitle = "Proportion = 0.4") +
+  labs(x = "Effect", y = "Parameter Estimate",  subtitle = "Proportion = 0.4") +
   scale_y_continuous(breaks = c(0.4, 0.6, 0.8)) +
-  facet_grid(Loading ~ Effect,
-             labeller = labeller(.rows = label_both, .cols = label_both)) +
+  facet_grid(
+    Loading ~ Indicator,
+    labeller = labeller(
+      .cols = label_both,
+      Loading = as_labeller(c(
+        `small` = "Small",
+        `medium` = "Medium",
+        `large` = "Large"
+      ),default = label_both)
+    )
+  ) +
   theme_bw() +
   theme(
     plot.subtitle = element_text(size = 15),
     axis.title.x = element_text(size = 15),
     axis.title.y = element_text(size = 15),
     strip.background = element_rect(fill = "white", color = "white", size = 1),
-    panel.grid.major = element_line(color = "white"),
-    panel.grid.minor = element_line(color = "white"),
+    panel.grid.major = element_line(color = "gray"),
+    panel.grid.minor = element_line(color = "gray"),
     strip.text.x = element_text(size = 10),
     strip.text.y = element_text(angle = -90, size = 10),
     legend.position = "bottom",
@@ -1042,17 +1049,22 @@ final_plot <- ggarrange(
   p2 +  rremove("ylab"),
   nrow = 2,
   common.legend = TRUE,
-  legend = "right"
+  legend = "bottom"
 ) %>%
   annotate_figure(left = text_grob("Parameter Estimate",
                                    size = 15,
                                    rot = 90))
 
-ggsave(final_plot,
-       filename="simulation_outcome_plot.png",
-       path = "/Users/tayloryen/Desktop",
-       width = 40,
-       height = 30,
-       units = "cm",
-       device = "png",
-       dpi = 320)
+ggsave(
+  final_plot,
+  filename = paste0("simulation_outcome_plot_", rep, ".pdf"),
+  path = "/Users/tayloryen/Desktop/github project/Measurement-Invariance/new_simulation/outcome",
+  width = 21,
+  height = 27,
+  units = "cm",
+  device = "pdf",
+  dpi = 400
+)
+
+setwd("/Users/tayloryen/Desktop/github project/Measurement-Invariance/new_simulation/outcome")
+save.image(file = paste0("rep_",rep,".RData"))
