@@ -8,9 +8,6 @@ library(latex2exp)
 library(ggpubr)
 library(dqrng)
 options(dplyr.summarise.inform = FALSE)
-setwd(
-  "/Users/tayloryen/Desktop/github project/Measurement-Invariance/new_simulation/step_5"
-)
 
 # parameters setting ------------------------------------------------------
 
@@ -945,7 +942,7 @@ labels <-
       "$\\tau_{\\hat{\\eta}\\eta}$ (All items)",
       "$\\tau_{x \\eta}$ (All items)",
       "$\\tau_{\\hat{\\eta}\\eta}$ (Fair items)",
-      "$\\tau_{x \\eta}$ (Aair items)"
+      "$\\tau_{x \\eta}$ (Fair items)"
     )
   ))
 p1 <- ggplot(outcome_proportion_1,
@@ -1070,7 +1067,7 @@ final_plot <- ggarrange(
 
 ggsave(
   final_plot,
-  filename = paste0("simulation_outcome_plot_", rep, ".pdf"),
+  filename = paste0("simulation_outcome_plot_rep_", rep, "_obsn_", obs_n, ".pdf"),
   path = "/Users/tayloryen/Desktop/github project/Measurement-Invariance/kendall_tau_simulation/outcome",
   width = 21,
   height = 27,
@@ -1082,4 +1079,4 @@ ggsave(
 setwd(
   "/Users/tayloryen/Desktop/github project/Measurement-Invariance/kendall_tau_simulation/outcome"
 )
-save.image(file = paste0("rep_", rep, ".RData"))
+save.image(file = paste0("rep_", rep, "_obsn_", obs_n, ".RData"))
