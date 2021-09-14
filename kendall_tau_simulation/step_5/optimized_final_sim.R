@@ -9,11 +9,12 @@ library(ggpubr)
 library(dqrng)
 options(dplyr.summarise.inform = FALSE)
 
+
 # parameters setting ------------------------------------------------------
 
 
 seed <- 123
-rep <- 50
+rep <- 500
 obs_n <- 400
 eta_n <- 1
 ind_n <- c(5, 10, 15)
@@ -92,7 +93,7 @@ sim <-
                     dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu1 + lambda %*% eta + epsilon
-                dta1[k,] <- c(y, eta, 1)
+                dta1[k, ] <- c(y, eta, 1)
               }
               if (q == 1) {
                 nu2 <- matrix(
@@ -128,7 +129,7 @@ sim <-
                     dqrnorm(1, mean = epsilon_mean, sd = epsilon_sd[m, 1])
                 }
                 y <- nu2 + lambda %*% eta + epsilon
-                dta2[k,] <- c(y, eta, 2)
+                dta2[k, ] <- c(y, eta, 2)
               }
               dta_all <- rbind(dta1, dta2)
               colnames(dta_all) <-
@@ -915,19 +916,6 @@ outcome_list <- sim(
 )
 
 
-# rate of convergence -----------------------------------------------------
-
-
-converge_rate <- 1 - (
-  outcome_list[[2]] %>%
-    as_tibble() %>%
-    select(runtime) %>%
-    filter(runtime != 1) %>%
-    nrow() / outcome_list[[2]]
-  %>% nrow()
-)
-
-
 # plot --------------------------------------------------------------------
 
 
@@ -976,16 +964,17 @@ p1 <- ggplot(outcome_proportion_1,
     subtitle = "Proportion = 0.2"
   ) +
   scale_y_continuous(breaks = c(0.4, 0.6, 0.8)) +
-  facet_grid(Loading ~ Indicator,
-             labeller = labeller(.cols = label_both,
-                                 Loading = as_labeller(
-                                   c(
-                                     `small` = "Small",
-                                     `medium` = "Medium",
-                                     `large` = "Large"
-                                   ),
-                                   default = label_both
-                                 ))) +
+  facet_grid(
+    Loading ~ Indicator,
+    labeller = labeller(
+      .cols = label_both,
+      Loading = as_labeller(c(
+        `small` = "Small",
+        `medium` = "Medium",
+        `large` = "Large"
+      ),default = label_both)
+    )
+  ) +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 35),
@@ -1028,16 +1017,17 @@ p2 <- ggplot(outcome_proportion_2,
   ) +
   labs(x = "Effect", y = "Parameter Estimate",  subtitle = "Proportion = 0.4") +
   scale_y_continuous(breaks = c(0.4, 0.6, 0.8)) +
-  facet_grid(Loading ~ Indicator,
-             labeller = labeller(.cols = label_both,
-                                 Loading = as_labeller(
-                                   c(
-                                     `small` = "Small",
-                                     `medium` = "Medium",
-                                     `large` = "Large"
-                                   ),
-                                   default = label_both
-                                 ))) +
+  facet_grid(
+    Loading ~ Indicator,
+    labeller = labeller(
+      .cols = label_both,
+      Loading = as_labeller(c(
+        `small` = "Small",
+        `medium` = "Medium",
+        `large` = "Large"
+      ),default = label_both)
+    )
+  ) +
   theme_bw() +
   theme(
     plot.subtitle = element_text(size = 15),
@@ -1067,8 +1057,8 @@ final_plot <- ggarrange(
 
 ggsave(
   final_plot,
-  filename = paste0("simulation_outcome_plot_rep_", rep, "_obsn_", obs_n, ".pdf"),
-  path = "/Users/tayloryen/Desktop/github project/Measurement-Invariance/kendall_tau_simulation/outcome",
+  filename = paste0("simulation_outcome_plot_rep", rep, "_obns", obs_n, ".pdf"),
+  path = "./outcome/plot",
   width = 21,
   height = 27,
   units = "cm",
@@ -1076,7 +1066,4 @@ ggsave(
   dpi = 400
 )
 
-setwd(
-  "/Users/tayloryen/Desktop/github project/Measurement-Invariance/kendall_tau_simulation/outcome"
-)
-save.image(file = paste0("rep_", rep, "_obsn_", obs_n, ".RData"))
+save.image(file=paste0("./outcome/env/env_rep",rep,"_obsn",obs_n,".RData"))
