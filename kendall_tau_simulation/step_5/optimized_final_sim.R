@@ -15,7 +15,7 @@ options(dplyr.summarise.inform = FALSE)
 
 seed <- 123
 rep <- 500
-obs_n <- 100
+obs_n <- 400
 eta_n <- 1
 ind_n <- c(5, 10, 15)
 lambda_value <-
@@ -1057,8 +1057,8 @@ final_plot <- ggarrange(
 
 ggsave(
   final_plot,
-  filename = paste0("simulation_outcome_plot_", rep, ".pdf"),
-  path = "../outcome/plot",
+  filename = paste0("simulation_outcome_plot_rep", rep, "_obns", obs_n, ".pdf"),
+  path = "./outcome/plot",
   width = 21,
   height = 27,
   units = "cm",
@@ -1066,4 +1066,5 @@ ggsave(
   dpi = 400
 )
 
-save.image(file=paste0("../outcome/env/env_rep",rep,"_obsn",obs_n,".RData"))
+
+save.image(file=paste0("./outcome/env/env_rep", rep,"_obsn", obs_n,".RData"))
