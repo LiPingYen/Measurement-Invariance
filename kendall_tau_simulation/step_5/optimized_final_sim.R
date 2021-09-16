@@ -1066,4 +1066,4 @@ ggsave(
   dpi = 400
 )
 
-save.image(file=paste0("./outcome/env/env_rep",rep,"_obsn",obs_n,".RData"))
+save.image(file=paste0("./outcome/env/env_rep", rep,"_obsn", obs_n,".RData"))
