@@ -943,7 +943,7 @@ p1 <- ggplot(outcome_proportion_1,
     size = 1,
     show.legend = c(colour = TRUE)
   ) +
-  scale_shape_manual(values = c(17, 15, 4, 3), labels = labels) +
+  scale_shape_manual(values = c(17, 15, 4, 16), labels = labels) +
   scale_colour_manual(values = c("#F8766D", "#619CFF", "#00BA38", "#E69F00"),
                       labels = labels) +
   scale_x_discrete(labels = c("None", "Small", "Medium", "Large")) +
@@ -1001,7 +1001,7 @@ p2 <- ggplot(outcome_proportion_2,
     size = 1,
     show.legend = c(colour = TRUE)
   ) +
-  scale_shape_manual(values = c(17, 15, 4, 3), labels = labels) +
+  scale_shape_manual(values = c(17, 15, 4, 16), labels = labels) +
   scale_colour_manual(values = c("#F8766D", "#619CFF", "#00BA38", "#E69F00"),
                       labels = labels) +
   scale_x_discrete(labels = c("None", "Small", "Medium", "Large")) +
@@ -1057,12 +1057,12 @@ final_plot <- ggarrange(
 
 ggsave(
   final_plot,
-  filename = paste0("simulation_outcome_plot_rep", rep, "_obns", obs_n, ".pdf"),
+  filename = paste0("simulation_outcome_plot_rep", rep, "_obns", obs_n, ".png"),
   path = "./outcome/plot",
   width = 21,
   height = 27,
   units = "cm",
-  device = "pdf",
+  device = "png",
   dpi = 400
 )
 

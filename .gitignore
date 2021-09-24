@@ -28,15 +28,13 @@ vignettes/*.pdf
 .Renviron
 .DS_Store
 *.RDataTmp
-
 # word docx
 *.docx
-
 # csv
 *.csv
-
 # DS_Store
 *.DS_Store
-
 # PDF
 *.pdf
+# PNG
+*.png
