@@ -3,7 +3,7 @@ library(tidyverse)
 
 # import environment data -------------------------------------------------
 
-load("./outcome/env_rep500_obsn800.RData")
+load("./outcome/env/env_rep500_obsn1200.RData")
 
 
 # analysis ----------------------------------------------------------------
@@ -96,3 +96,44 @@ dta |>
 dta |>
   filter(Effect != "none") |>
   slice_min(n = 1, order_by = diff_true_sum) |> View()
+
+
+# difference between noninvariance and invariance -------------------------
+
+
+dta2 <- outcome_list[[1]] |>
+  select(-c("lower", "upper")) |>
+  filter(Type != "predict true between invariance" &
+           Type != "true sum between invariance") |>
+  pivot_wider(
+    names_from = c(Type, Effect),
+    values_from = mean_est,
+    names_sep = "_"
+  )
+
+# calculate tau between noninvariance and invariance 
+# among all situations without removing any items.
+
+
+dta2 |>
+  rowwise(Indicator, Loading, Proportion) |>
+  mutate(
+    predict_true_between_noninv_min = min(
+      c(
+        `predict true between_small`,
+        `predict true between_medium`,
+        `predict true between_large`
+      )
+    ),
+    true_sum_between_noninv_min = min(
+      c(
+        `true sum between_small`,
+        `true sum between_medium`,
+        `true sum between_large`
+      )
+    )
+  ) |> group_by(Indicator,Loading,Proportion) |> 
+  summarise(diff_inv_noninvmin_predict_true = `predict true between_none` - predict_true_between_noninv_min,
+            diff_inv_noninvmin_true_sum = `true sum between_none` - true_sum_between_noninv_min) |> 
+  arrange(desc(diff_inv_noninvmin_predict_true)) 
+
