@@ -133,7 +133,7 @@ dta2 |>
       )
     )
   ) |> group_by(Indicator,Loading,Proportion) |> 
-  summarise(diff_inv_noninvmin_predict_true = `predict true between_none` - predict_true_between_noninv_min,
+  mutate(diff_inv_noninvmin_predict_true = `predict true between_none` - predict_true_between_noninv_min,
             diff_inv_noninvmin_true_sum = `true sum between_none` - true_sum_between_noninv_min) |> 
-  arrange(desc(diff_inv_noninvmin_predict_true)) 
+  arrange(desc(diff_inv_noninvmin_predict_true)) |> View()
 
