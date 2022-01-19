@@ -31,7 +31,7 @@ nu2_value <- c(0, 0.1, 0.3, 0.5)
 non_inv_label <- c("none", "small", "medium", "large")
 pror_non_inv_label <- c("0.2", "0.4")
 
-source("./kendall_tau_simulation/fin_function.R")
+source("./kendall_tau_simulation/final_function.R")
 
 
 # all outcome -------------------------------------------------------------
