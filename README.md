@@ -20,6 +20,12 @@ The simulation process and condition can be found in the literature mentioned in
 
 ### Permutation Randomization Methods for Testing Measurement Equivalence and Detecting Differential Item Functioning in Multiple-Group Confirmatory Factor Analysis
 
+The simulation process and condition can be found in the literature mentioned in the reference part.
+
+### How violation of measurement invariance influence permutation invariance of test sum score and predict factor score
+
+The code is to conduct the simulation for figuring out whether the violation of measurement invariance will cause the bias of permutation invariance of test sum score and predict factor score or not.
+
 ## Reference
 1. Myeongsun Yoon & Roger E. Millsap (2007) Detecting Violations of Factorial Invariance Using Data-Based Specification Searches: A Monte Carlo Study, Structural Equation Modeling: A Multidisciplinary Journal, 14:3, 435-463, DOI: [10.1080/10705510701301677](https://www.tandfonline.com/doi/full/10.1080/10705510701301677)
 
